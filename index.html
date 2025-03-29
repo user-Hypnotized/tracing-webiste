@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Tracing Screen</title>
     <style>
         body {
@@ -14,6 +14,7 @@
             justify-content: center;
             height: 100vh;
             font-family: Arial, sans-serif;
+            touch-action: none; /* Prevents zooming and touch gestures */
         }
         #imageContainer {
             width: 100vw;
