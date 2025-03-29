@@ -52,7 +52,7 @@
         }
         #lockButton { top: 20px; right: 20px; }
         #uploadButton { top: 20px; left: 20px; }
-        #uploadMenu, #controls {
+        #uploadMenu {
             position: absolute;
             background: #1e1e1e;
             padding: 15px;
@@ -64,33 +64,59 @@
             max-width: 90%;
             z-index: 3;
         }
-        #uploadMenu { top: 70px; left: 20px; }
-        #controls { bottom: 20px; left: 50%; transform: translateX(-50%); }
-        #uploadMenu input, #uploadMenu button, #controls input {
+        #uploadMenu input, #uploadMenu button {
             margin-top: 10px;
             padding: 8px;
             border-radius: 5px;
             border: none;
             font-size: 16px;
         }
-        #uploadMenu input, #controls input {
+        #uploadMenu input {
             background: #2a2a2a;
             color: white;
         }
-        #uploadMenu button, #controls button {
+        #uploadMenu button {
             background: #007BFF;
             color: white;
             cursor: pointer;
             transition: 0.3s;
         }
-        #uploadMenu button:hover, #controls button:hover {
+        #uploadMenu button:hover {
             background: #0056b3;
+        }
+        #controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        #sliderMenu {
+            position: absolute;
+            bottom: 80px;
+            left: 20px;
+            background: #1e1e1e;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.1);
+            display: none;
+            flex-direction: column;
+            z-index: 3;
+        }
+        #sliderMenu input {
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+            background: #2a2a2a;
+            color: white;
         }
     </style>
 </head>
 <body oncontextmenu="return false;">
     <button id="uploadButton" class="button">Choose Image</button>
     <button id="lockButton" class="button">Lock</button>
+    <button id="sliderButton" class="button" style="bottom: 20px; left: 20px;">Adjust Sliders</button>
     
     <div id="uploadMenu">
         <input type="file" id="fileInput" accept="image/*">
@@ -98,7 +124,7 @@
         <button id="loadUrl">Load URL</button>
     </div>
     
-    <div id="controls">
+    <div id="sliderMenu">
         <label>Contrast</label>
         <input type="range" id="contrastSlider" min="0" max="3" step="0.1" value="1">
         <label>Exposure</label>
@@ -115,7 +141,8 @@
         const lockButton = document.getElementById('lockButton');
         const uploadButton = document.getElementById('uploadButton');
         const uploadMenu = document.getElementById('uploadMenu');
-        const controls = document.getElementById('controls');
+        const sliderButton = document.getElementById('sliderButton');
+        const sliderMenu = document.getElementById('sliderMenu');
         const contrastSlider = document.getElementById('contrastSlider');
         const exposureSlider = document.getElementById('exposureSlider');
         let locked = false;
@@ -155,7 +182,6 @@
         function loadImage(src) {
             imageContainer.innerHTML = `<img src="${src}" alt="Uploaded Image">`;
             imgElement = imageContainer.querySelector('img');
-            controls.style.display = 'flex';
         }
 
         contrastSlider.addEventListener('input', updateFilters);
@@ -172,6 +198,10 @@
             document.body.style.touchAction = locked ? 'none' : 'auto';
             uploadButton.style.pointerEvents = locked ? 'none' : 'auto';
             lockButton.textContent = locked ? 'Unlock' : 'Lock';
+        });
+
+        sliderButton.addEventListener('click', () => {
+            sliderMenu.style.display = sliderMenu.style.display === 'flex' ? 'none' : 'flex';
         });
     </script>
 </body>
