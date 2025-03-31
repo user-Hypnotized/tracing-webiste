@@ -84,12 +84,7 @@
         #uploadMenu button:hover {
             background: #0056b3;
         }
-        #controls {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
+        #sliderButton { bottom: 20px; left: 20px; }
         #sliderMenu {
             position: absolute;
             bottom: 80px;
@@ -111,12 +106,17 @@
             background: #2a2a2a;
             color: white;
         }
+        #sliderMenu label {
+            color: white;
+            font-size: 16px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body oncontextmenu="return false;">
     <button id="uploadButton" class="button">Choose Image</button>
     <button id="lockButton" class="button">Lock</button>
-    <button id="sliderButton" class="button" style="bottom: 20px; left: 20px;">Adjust Sliders</button>
+    <button id="sliderButton" class="button">Adjust Sliders</button>
     
     <div id="uploadMenu">
         <input type="file" id="fileInput" accept="image/*">
