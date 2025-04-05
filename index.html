@@ -2,9 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tracing Screen</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            touch-action: none;
+        }
+
         body {
             margin: 0;
             overflow: hidden;
@@ -13,12 +22,18 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
-            font-family: Arial, sans-serif;
-            touch-action: auto;
+            touch-action: none;
             flex-direction: column;
             position: relative;
             transition: background-color 0.3s;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
+
         #imageContainer {
             display: flex;
             align-items: center;
@@ -30,57 +45,96 @@
             max-height: 80vh;
             transform-origin: center;
             transition: transform 0.3s ease;
+            touch-action: none;
         }
+
         img {
             max-width: 100%;
             max-height: 100%;
             filter: contrast(1) brightness(1);
             transition: transform 0.3s ease;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            touch-action: none;
+            -webkit-user-drag: none;
         }
+
         .button {
             position: absolute;
             padding: 12px 24px;
-            font-size: 18px;
+            font-size: 16px;
+            font-weight: 500;
             cursor: pointer;
-            background: linear-gradient(135deg, #007BFF, #0056b3);
+            background: rgba(255, 255, 255, 0.1);
             color: white;
-            border: none;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             z-index: 3;
             opacity: 1;
             visibility: visible;
+            touch-action: manipulation;
         }
+
         .button:hover {
-            background: linear-gradient(135deg, #0056b3, #003f7f);
-            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
         .button.hidden {
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
         }
-        #lockButton { top: 20px; right: 20px; }
+
+        #lockButton { 
+            top: 20px; 
+            right: 20px;
+            background: linear-gradient(135deg, #FF4B4B, #FF7676);
+            border: none;
+        }
+
+        #lockButton:hover {
+            background: linear-gradient(135deg, #FF3333, #FF6060);
+        }
+
         #uploadButton { top: 20px; left: 20px; }
         #resetButton { bottom: 20px; left: 50%; transform: translateX(-50%); }
         #gridButton { bottom: 20px; right: 20px; }
         #themeButton { top: 80px; right: 20px; }
         #sliderButton { bottom: 20px; left: 20px; }
         #transformButton { top: 80px; left: 20px; }
+        #undoButton { top: 140px; left: 20px; }
+        #redoButton { top: 140px; left: 140px; }
+        #accessibilityButton { top: 140px; right: 20px; }
+        #referenceButton { top: 200px; left: 20px; }
         
         .menu {
             position: absolute;
-            background: #1e1e1e;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.1);
+            background: rgba(30, 30, 30, 0.95);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
             display: none;
             flex-direction: column;
+            gap: 15px;
             z-index: 3;
             transition: all 0.3s ease;
             opacity: 1;
             visibility: visible;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-width: 280px;
+            touch-action: none;
         }
         
         .menu.hidden {
@@ -89,54 +143,76 @@
             pointer-events: none;
         }
         
-        #uploadMenu {
-            top: 80px;
-            left: 20px;
-        }
+        #uploadMenu { top: 80px; left: 20px; }
+        #sliderMenu { bottom: 80px; left: 20px; }
+        #themeMenu { top: 140px; right: 20px; }
+        #transformMenu { top: 140px; left: 20px; }
+        #accessibilityMenu { top: 200px; right: 20px; }
+        #referenceMenu { top: 260px; left: 20px; }
         
-        #sliderMenu {
-            bottom: 80px;
-            left: 20px;
-        }
-        
-        #themeMenu {
-            top: 140px;
-            right: 20px;
+        .menu input, 
+        .menu button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            transition: all 0.2s ease;
+            touch-action: manipulation;
         }
 
-        #transformMenu {
-            top: 140px;
-            left: 20px;
-        }
-        
-        .menu input, .menu button {
-            margin-top: 10px;
-            padding: 8px;
-            border-radius: 5px;
+        .menu input[type="range"] {
+            -webkit-appearance: none;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
             border: none;
-            font-size: 16px;
         }
-        
-        .menu input[type="text"], .menu input[type="color"], .menu input[type="number"] {
-            background: #2a2a2a;
-            color: white;
+
+        .menu input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .menu input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        .menu input[type="file"] {
+            padding: 8px;
+        }
+
+        .menu input[type="color"] {
+            height: 40px;
+            padding: 4px;
         }
         
         .menu button {
-            background: #007BFF;
+            background: linear-gradient(135deg, #3B82F6, #2563EB);
             color: white;
+            font-weight: 500;
+            border: none;
             cursor: pointer;
-            transition: 0.3s;
         }
         
         .menu button:hover {
-            background: #0056b3;
+            background: linear-gradient(135deg, #2563EB, #1D4ED8);
+            transform: translateY(-1px);
         }
         
         .menu label {
             color: white;
-            font-size: 16px;
-            margin-top: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: -10px;
         }
         
         #grid {
@@ -148,6 +224,7 @@
             pointer-events: none;
             z-index: 2;
             display: none;
+            touch-action: none;
         }
         
         .grid-line {
@@ -167,42 +244,135 @@
 
         .transform-button {
             width: 100%;
-            margin: 5px 0;
-            padding: 8px;
-            background: #007BFF;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
             color: white;
-            border: none;
-            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
             cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
         }
 
         .transform-button:hover {
-            background: #0056b3;
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
         }
 
         .color-group {
             margin-top: 15px;
             padding-top: 15px;
-            border-top: 1px solid #333;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-header {
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #urlInput {
+            margin-bottom: 10px;
+        }
+
+        #urlInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .button:hover .tooltip {
+            opacity: 1;
+        }
+
+        #colorPicker {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            cursor: crosshair;
+            display: none;
+        }
+
+        #measureTool {
+            position: absolute;
+            border-top: 2px solid #3B82F6;
+            transform-origin: left;
+            display: none;
+        }
+
+        #measureValue {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .high-contrast {
+            filter: contrast(1.5) !important;
+        }
+
+        .keyboard-shortcuts {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            display: none;
+        }
+
+        .shortcut-key {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin: 0 2px;
         }
     </style>
 </head>
 <body oncontextmenu="return false;">
-    <button id="uploadButton" class="button">Choose Image</button>
+    <button id="uploadButton" class="button">Upload Image</button>
     <button id="lockButton" class="button">Lock</button>
-    <button id="sliderButton" class="button">Adjust Sliders</button>
-    <button id="resetButton" class="button">Reset</button>
-    <button id="gridButton" class="button">Toggle Grid</button>
+    <button id="sliderButton" class="button">Adjust Image</button>
+    <button id="resetButton" class="button">Reset All</button>
+    <button id="gridButton" class="button">Grid</button>
     <button id="themeButton" class="button">Theme</button>
     <button id="transformButton" class="button">Transform</button>
+    <button id="undoButton" class="button">Undo</button>
+    <button id="redoButton" class="button">Redo</button>
+    <button id="accessibilityButton" class="button">Accessibility</button>
+    <button id="referenceButton" class="button">Reference Tools</button>
     
     <div id="uploadMenu" class="menu">
+        <div class="menu-header">Upload Image</div>
         <input type="file" id="fileInput" accept="image/*">
-        <input type="text" id="urlInput" placeholder="Paste image URL">
-        <button id="loadUrl">Load URL</button>
+        <input type="text" id="urlInput" placeholder="Or paste an image URL">
+        <button id="loadUrl">Load from URL</button>
     </div>
     
     <div id="sliderMenu" class="menu">
+        <div class="menu-header">Image Adjustments</div>
         <label>Contrast</label>
         <input type="range" id="contrastSlider" min="0" max="3" step="0.1" value="1">
         <label>Exposure</label>
@@ -212,6 +382,7 @@
     </div>
     
     <div id="themeMenu" class="menu">
+        <div class="menu-header">Theme Settings</div>
         <div class="color-group">
             <label>Background Color</label>
             <input type="color" id="bgColor" value="#121212">
@@ -225,6 +396,7 @@
     </div>
 
     <div id="transformMenu" class="menu">
+        <div class="menu-header">Transform Image</div>
         <label>Rotation (degrees)</label>
         <input type="number" id="rotationInput" value="0" min="-180" max="180">
         <label>Zoom</label>
@@ -232,11 +404,52 @@
         <button class="transform-button" id="flipHorizontal">Flip Horizontal</button>
         <button class="transform-button" id="flipVertical">Flip Vertical</button>
     </div>
+
+    <div id="accessibilityMenu" class="menu">
+        <div class="menu-header">Accessibility</div>
+        <button class="transform-button" id="highContrastToggle">High Contrast Mode</button>
+        <button class="transform-button" id="showShortcuts">Show Keyboard Shortcuts</button>
+        <label>UI Scale</label>
+        <input type="range" id="uiScale" min="0.8" max="1.5" step="0.1" value="1">
+    </div>
+
+    <div id="referenceMenu" class="menu">
+        <div class="menu-header">Reference Tools</div>
+        <button class="transform-button" id="colorPickerTool">Color Picker</button>
+        <button class="transform-button" id="measurementTool">Measurement Tool</button>
+        <button class="transform-button" id="angleTool">Angle Tool</button>
+    </div>
     
     <div id="grid"></div>
     <div id="imageContainer"></div>
+    <div id="colorPicker"></div>
+    <div id="measureTool"><div id="measureValue"></div></div>
+    <div class="keyboard-shortcuts">
+        <span class="shortcut-key">Ctrl+Z</span> Undo
+        <span class="shortcut-key">Ctrl+Y</span> Redo
+        <span class="shortcut-key">Ctrl+R</span> Reset
+        <span class="shortcut-key">G</span> Toggle Grid
+        <span class="shortcut-key">L</span> Lock/Unlock
+    </div>
     
     <script>
+        // Prevent pinch zoom
+        document.addEventListener('touchmove', function(event) {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+
+        // Prevent double-tap zoom
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+
         const fileInput = document.getElementById('fileInput');
         const urlInput = document.getElementById('urlInput');
         const loadUrl = document.getElementById('loadUrl');
@@ -263,12 +476,34 @@
         const zoomSlider = document.getElementById('zoomSlider');
         const flipHorizontal = document.getElementById('flipHorizontal');
         const flipVertical = document.getElementById('flipVertical');
+        const undoButton = document.getElementById('undoButton');
+        const redoButton = document.getElementById('redoButton');
+        const accessibilityButton = document.getElementById('accessibilityButton');
+        const accessibilityMenu = document.getElementById('accessibilityMenu');
+        const referenceButton = document.getElementById('referenceButton');
+        const referenceMenu = document.getElementById('referenceMenu');
+        const colorPickerTool = document.getElementById('colorPickerTool');
+        const measurementTool = document.getElementById('measurementTool');
+        const angleTool = document.getElementById('angleTool');
+        const colorPicker = document.getElementById('colorPicker');
+        const measureTool = document.getElementById('measureTool');
+        const measureValue = document.getElementById('measureValue');
+        const highContrastToggle = document.getElementById('highContrastToggle');
+        const showShortcuts = document.getElementById('showShortcuts');
+        const uiScale = document.getElementById('uiScale');
+        const keyboardShortcuts = document.querySelector('.keyboard-shortcuts');
         
         let locked = false;
         let imgElement = null;
         let initialSettings = null;
         let isFlippedH = false;
         let isFlippedV = false;
+        let undoStack = [];
+        let redoStack = [];
+        let isColorPickerActive = false;
+        let isMeasuring = false;
+        let startPoint = null;
+        let highContrastMode = false;
 
         const defaultSettings = {
             contrast: 1,
@@ -282,6 +517,80 @@
             isFlippedH: false,
             isFlippedV: false
         };
+
+        function saveState() {
+            if (imgElement) {
+                const state = {
+                    contrast: contrastSlider.value,
+                    exposure: exposureSlider.value,
+                    opacity: opacitySlider.value,
+                    rotation: rotationInput.value,
+                    zoom: zoomSlider.value,
+                    isFlippedH,
+                    isFlippedV
+                };
+                undoStack.push(state);
+                redoStack = [];
+                updateUndoRedoButtons();
+            }
+        }
+
+        function undo() {
+            if (undoStack.length > 0) {
+                const currentState = {
+                    contrast: contrastSlider.value,
+                    exposure: exposureSlider.value,
+                    opacity: opacitySlider.value,
+                    rotation: rotationInput.value,
+                    zoom: zoomSlider.value,
+                    isFlippedH,
+                    isFlippedV
+                };
+                redoStack.push(currentState);
+                
+                const previousState = undoStack.pop();
+                applyState(previousState);
+                updateUndoRedoButtons();
+            }
+        }
+
+        function redo() {
+            if (redoStack.length > 0) {
+                const currentState = {
+                    contrast: contrastSlider.value,
+                    exposure: exposureSlider.value,
+                    opacity: opacitySlider.value,
+                    rotation: rotationInput.value,
+                    zoom: zoomSlider.value,
+                    isFlippedH,
+                    isFlippedV
+                };
+                undoStack.push(currentState);
+                
+                const nextState = redoStack.pop();
+                applyState(nextState);
+                updateUndoRedoButtons();
+            }
+        }
+
+        function applyState(state) {
+            contrastSlider.value = state.contrast;
+            exposureSlider.value = state.exposure;
+            opacitySlider.value = state.opacity;
+            rotationInput.value = state.rotation;
+            zoomSlider.value = state.zoom;
+            isFlippedH = state.isFlippedH;
+            isFlippedV = state.isFlippedV;
+            updateFilters();
+            updateTransform();
+        }
+
+        function updateUndoRedoButtons() {
+            undoButton.disabled = undoStack.length === 0;
+            redoButton.disabled = redoStack.length === 0;
+            undoButton.style.opacity = undoStack.length === 0 ? '0.5' : '1';
+            redoButton.style.opacity = redoStack.length === 0 ? '0.5' : '1';
+        }
 
         function loadSavedSettings() {
             const saved = localStorage.getItem('tracingSettings');
@@ -340,23 +649,32 @@
             enterFullscreen();
             createGrid();
             loadSavedSettings();
+            updateUndoRedoButtons();
         });
 
         const menus = {
             upload: uploadMenu,
             slider: sliderMenu,
             theme: themeMenu,
-            transform: transformMenu
+            transform: transformMenu,
+            accessibility: accessibilityMenu,
+            reference: referenceMenu
         };
 
         const menuButtons = {
             upload: uploadButton,
             slider: sliderButton,
             theme: themeButton,
-            transform: transformButton
+            transform: transformButton,
+            accessibility: accessibilityButton,
+            reference: referenceButton
         };
 
-        const allButtons = [uploadButton, sliderButton, resetButton, gridButton, themeButton, transformButton];
+        const allButtons = [
+            uploadButton, sliderButton, resetButton, gridButton,
+            themeButton, transformButton, undoButton, redoButton,
+            accessibilityButton, referenceButton
+        ];
 
         function toggleButtonsLock(isLocked) {
             allButtons.forEach(button => {
@@ -408,6 +726,9 @@
             };
             updateFilters();
             updateTransform();
+            undoStack = [];
+            redoStack = [];
+            updateUndoRedoButtons();
         }
 
         fileInput.addEventListener('change', (event) => {
@@ -430,6 +751,11 @@
             if (imgElement) {
                 imgElement.style.filter = `contrast(${contrastSlider.value}) brightness(${exposureSlider.value})`;
                 imgElement.style.opacity = opacitySlider.value;
+                if (highContrastMode) {
+                    imgElement.classList.add('high-contrast');
+                } else {
+                    imgElement.classList.remove('high-contrast');
+                }
             }
             saveSettings();
         }
@@ -450,28 +776,41 @@
         }
 
         [contrastSlider, exposureSlider, opacitySlider].forEach(slider => {
-            slider.addEventListener('input', updateFilters);
+            slider.addEventListener('input', () => {
+                updateFilters();
+                saveState();
+            });
         });
 
         [gridColor, gridOpacity].forEach(input => {
             input.addEventListener('input', updateGridColor);
         });
 
-        rotationInput.addEventListener('input', updateTransform);
-        zoomSlider.addEventListener('input', updateTransform);
+        rotationInput.addEventListener('input', () => {
+            updateTransform();
+            saveState();
+        });
+
+        zoomSlider.addEventListener('input', () => {
+            updateTransform();
+            saveState();
+        });
 
         flipHorizontal.addEventListener('click', () => {
             isFlippedH = !isFlippedH;
             updateTransform();
+            saveState();
         });
 
         flipVertical.addEventListener('click', () => {
             isFlippedV = !isFlippedV;
             updateTransform();
+            saveState();
         });
 
         resetButton.addEventListener('click', () => {
             if (!locked) {
+                saveState();
                 contrastSlider.value = defaultSettings.contrast;
                 exposureSlider.value = defaultSettings.exposure;
                 opacitySlider.value = defaultSettings.opacity;
@@ -531,12 +870,100 @@
             document.body.style.touchAction = locked ? 'none' : 'auto';
             toggleButtonsLock(locked);
             lockButton.textContent = locked ? 'Unlock' : 'Lock';
+            lockButton.style.background = locked 
+                ? 'linear-gradient(135deg, #22C55E, #16A34A)'
+                : 'linear-gradient(135deg, #FF4B4B, #FF7676)';
         });
 
         bgColor.addEventListener('input', (e) => {
             document.body.style.backgroundColor = e.target.value;
             saveSettings();
         });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'z') {
+                e.preventDefault();
+                undo();
+            } else if (e.ctrlKey && e.key === 'y') {
+                e.preventDefault();
+                redo();
+            } else if (e.ctrlKey && e.key === 'r') {
+                e.preventDefault();
+                resetButton.click();
+            } else if (e.key === 'g') {
+                gridButton.click();
+            } else if (e.key === 'l') {
+                lockButton.click();
+            }
+        });
+
+        // Color Picker Tool
+        colorPickerTool.addEventListener('click', () => {
+            isColorPickerActive = !isColorPickerActive;
+            colorPicker.style.display = isColorPickerActive ? 'block' : 'none';
+            document.body.style.cursor = isColorPickerActive ? 'crosshair' : 'default';
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isColorPickerActive) {
+                colorPicker.style.left = (e.clientX - 15) + 'px';
+                colorPicker.style.top = (e.clientY - 15) + 'px';
+            }
+        });
+
+        // Measurement Tool
+        measurementTool.addEventListener('click', () => {
+            isMeasuring = !isMeasuring;
+            document.body.style.cursor = isMeasuring ? 'crosshair' : 'default';
+        });
+
+        document.addEventListener('mousedown', (e) => {
+            if (isMeasuring) {
+                startPoint = { x: e.clientX, y: e.clientY };
+                measureTool.style.display = 'block';
+                measureTool.style.left = startPoint.x + 'px';
+                measureTool.style.top = startPoint.y + 'px';
+            }
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isMeasuring && startPoint) {
+                const dx = e.clientX - startPoint.x;
+                const dy = e.clientY - startPoint.y;
+                const length = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                
+                measureTool.style.width = length + 'px';
+                measureTool.style.transform = `rotate(${angle}deg)`;
+                measureValue.textContent = `${Math.round(length)}px / ${Math.round(angle)}°`;
+                measureValue.style.left = (length / 2) + 'px';
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isMeasuring) {
+                startPoint = null;
+                measureTool.style.display = 'none';
+            }
+        });
+
+        // Accessibility Features
+        highContrastToggle.addEventListener('click', () => {
+            highContrastMode = !highContrastMode;
+            updateFilters();
+        });
+
+        showShortcuts.addEventListener('click', () => {
+            keyboardShortcuts.style.display = keyboardShortcuts.style.display === 'none' ? 'block' : 'none';
+        });
+
+        uiScale.addEventListener('input', (e) => {
+            document.documentElement.style.fontSize = e.target.value + 'em';
+        });
+
+        undoButton.addEventListener('click', undo);
+        redoButton.addEventListener('click', redo);
     </script>
 </body>
 </html>
