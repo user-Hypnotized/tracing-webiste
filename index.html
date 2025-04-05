@@ -4,8 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tracing Screen</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
     <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --danger: #EF4444;
+            --danger-hover: #DC2626;
+            --success: #10B981;
+            --success-hover: #059669;
+            --background: #0F172A;
+            --card: rgba(30, 41, 59, 0.8);
+            --border: rgba(148, 163, 184, 0.2);
+            --text: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --radius: 12px;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --transition: all 0.2s ease;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -17,7 +35,7 @@
         body {
             margin: 0;
             overflow: hidden;
-            background-color: #121212;
+            background-color: var(--background);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -32,6 +50,7 @@
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
+            color: var(--text);
         }
 
         #imageContainer {
@@ -53,36 +72,67 @@
             max-height: 100%;
             filter: contrast(1) brightness(1);
             transition: transform 0.3s ease;
-            border-radius: 8px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
             touch-action: none;
             -webkit-user-drag: none;
         }
 
-        .button {
-            position: absolute;
-            padding: 12px 24px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            transition: all 0.2s ease;
+        .button-container {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 10;
+            background: var(--card);
+            padding: 12px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 3;
-            opacity: 1;
-            visibility: visible;
-            touch-action: manipulation;
+            border: 1px solid var(--border);
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .side-panel {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 10;
+        }
+
+        .button {
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 44px;
+            height: 44px;
+        }
+
+        .button svg {
+            width: 20px;
+            height: 20px;
         }
 
         .button:hover {
             background: rgba(255, 255, 255, 0.15);
             transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: var(--shadow);
         }
 
         .button:active {
@@ -95,45 +145,70 @@
             pointer-events: none;
         }
 
+        .button:disabled {
+            background: rgba(50, 50, 50, 0.3);
+            color: var(--text-secondary);
+            border: 1px solid rgba(100, 100, 100, 0.2);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .button:disabled:hover {
+            background: rgba(50, 50, 50, 0.3);
+            transform: none;
+            box-shadow: none;
+        }
+
+        .button.enabled {
+            background: var(--primary);
+            border: 1px solid rgba(79, 70, 229, 0.5);
+        }
+
+        .button.enabled:hover {
+            background: var(--primary-hover);
+        }
+
         #lockButton { 
-            top: 20px; 
-            right: 20px;
-            background: linear-gradient(135deg, #FF4B4B, #FF7676);
+            background: var(--danger);
             border: none;
         }
 
         #lockButton:hover {
-            background: linear-gradient(135deg, #FF3333, #FF6060);
+            background: var(--danger-hover);
         }
 
-        #uploadButton { top: 20px; left: 20px; }
-        #resetButton { bottom: 20px; left: 50%; transform: translateX(-50%); }
-        #gridButton { bottom: 20px; right: 20px; }
-        #themeButton { top: 80px; right: 20px; }
-        #sliderButton { bottom: 20px; left: 20px; }
-        #transformButton { top: 80px; left: 20px; }
-        #undoButton { top: 140px; left: 20px; }
-        #redoButton { top: 140px; left: 140px; }
-        #accessibilityButton { top: 140px; right: 20px; }
-        #referenceButton { top: 200px; left: 20px; }
+        #lockButton.locked {
+            background: var(--success);
+        }
+
+        #lockButton.locked:hover {
+            background: var(--success-hover);
+        }
         
         .menu {
-            position: absolute;
-            background: rgba(30, 30, 30, 0.95);
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--card);
+            padding: 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
             display: none;
             flex-direction: column;
-            gap: 15px;
-            z-index: 3;
-            transition: all 0.3s ease;
+            gap: 16px;
+            z-index: 100;
+            transition: var(--transition);
             opacity: 1;
             visibility: visible;
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            min-width: 280px;
+            border: 1px solid var(--border);
+            min-width: 320px;
+            max-width: 90vw;
+            max-height: 90vh;
+            overflow-y: auto;
             touch-action: none;
         }
         
@@ -143,23 +218,29 @@
             pointer-events: none;
         }
         
-        #uploadMenu { top: 80px; left: 20px; }
-        #sliderMenu { bottom: 80px; left: 20px; }
-        #themeMenu { top: 140px; right: 20px; }
-        #transformMenu { top: 140px; left: 20px; }
-        #accessibilityMenu { top: 200px; right: 20px; }
-        #referenceMenu { top: 260px; left: 20px; }
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            z-index: 99;
+            display: none;
+        }
         
         .menu input, 
         .menu button {
             width: 100%;
             padding: 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
             font-size: 14px;
             background: rgba(255, 255, 255, 0.05);
-            color: white;
-            transition: all 0.2s ease;
+            color: var(--text);
+            transition: var(--transition);
             touch-action: manipulation;
         }
 
@@ -170,16 +251,17 @@
             border-radius: 3px;
             outline: none;
             border: none;
+            margin: 10px 0;
         }
 
         .menu input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             width: 18px;
             height: 18px;
-            background: white;
+            background: var(--primary);
             border-radius: 50%;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: var(--transition);
         }
 
         .menu input[type="range"]::-webkit-slider-thumb:hover {
@@ -193,26 +275,28 @@
         .menu input[type="color"] {
             height: 40px;
             padding: 4px;
+            cursor: pointer;
         }
         
         .menu button {
-            background: linear-gradient(135deg, #3B82F6, #2563EB);
+            background: var(--primary);
             color: white;
-            font-weight: 500;
+            font-weight: 600;
             border: none;
             cursor: pointer;
         }
         
         .menu button:hover {
-            background: linear-gradient(135deg, #2563EB, #1D4ED8);
+            background: var(--primary-hover);
             transform: translateY(-1px);
         }
         
         .menu label {
-            color: white;
+            color: var(--text);
             font-size: 14px;
             font-weight: 500;
-            margin-bottom: -10px;
+            margin-bottom: 4px;
+            display: block;
         }
         
         #grid {
@@ -246,12 +330,12 @@
             width: 100%;
             padding: 12px;
             background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
             cursor: pointer;
             font-weight: 500;
-            transition: all 0.2s ease;
+            transition: var(--transition);
         }
 
         .transform-button:hover {
@@ -260,18 +344,37 @@
         }
 
         .color-group {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
         }
 
         .menu-header {
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 18px; /* Reduced from 24px */
+            padding: 0;
+            width: auto;
+            height: auto;
+            line-height: 1;
+        }
+
+        .menu-close:hover {
+            color: var(--text);
         }
 
         #urlInput {
@@ -279,7 +382,7 @@
         }
 
         #urlInput::placeholder {
-            color: rgba(255, 255, 255, 0.5);
+            color: var(--text-secondary);
         }
 
         .tooltip {
@@ -293,143 +396,321 @@
             opacity: 0;
             transition: opacity 0.2s ease;
             white-space: nowrap;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-bottom: 8px;
         }
 
         .button:hover .tooltip {
             opacity: 1;
         }
 
-        #colorPicker {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            background: white;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            cursor: crosshair;
-            display: none;
-        }
-
-        #measureTool {
-            position: absolute;
-            border-top: 2px solid #3B82F6;
-            transform-origin: left;
-            display: none;
-        }
-
-        #measureValue {
-            position: absolute;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-        }
-
-        .high-contrast {
-            filter: contrast(1.5) !important;
-        }
-
         .keyboard-shortcuts {
             position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 12px;
-            display: none;
+            top: 24px;
+            left: 24px;
+            background: var(--card);
+            color: var(--text);
+            padding: 16px;
+            border-radius: var(--radius);
+            font-size: 14px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            z-index: 50;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
         }
 
         .shortcut-key {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 2px 6px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 8px;
             border-radius: 4px;
-            margin: 0 2px;
+            margin: 0 4px;
+            font-weight: 500;
+        }
+
+        .shortcut-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .shortcut-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .slider-value {
+            display: inline-block;
+            width: 40px;
+            text-align: right;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .slider-container input[type="range"] {
+            flex: 1;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .button-group .transform-button {
+            flex: 1;
+        }
+
+        @media (max-width: 768px) {
+            .button-container {
+                flex-wrap: wrap;
+                justify-content: center;
+                width: 90%;
+            }
+            
+            .menu {
+                width: 90%;
+                max-height: 80vh;
+            }
+            
+            .shortcut-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* SVG Icons */
+        .icon {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+            pointer-events: none; /* Add this line to prevent SVGs from capturing clicks */
         }
     </style>
 </head>
 <body oncontextmenu="return false;">
-    <button id="uploadButton" class="button">Upload Image</button>
-    <button id="lockButton" class="button">Lock</button>
-    <button id="sliderButton" class="button">Adjust Image</button>
-    <button id="resetButton" class="button">Reset All</button>
-    <button id="gridButton" class="button">Grid</button>
-    <button id="themeButton" class="button">Theme</button>
-    <button id="transformButton" class="button">Transform</button>
-    <button id="undoButton" class="button">Undo</button>
-    <button id="redoButton" class="button">Redo</button>
-    <button id="accessibilityButton" class="button">Accessibility</button>
-    <button id="referenceButton" class="button">Reference Tools</button>
+    <div class="button-container" id="buttonContainer">
+        <button id="uploadButton" class="button enabled" title="Upload Image">
+            <svg class="icon" viewBox="0 0 24 24">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+        </button>
+        <button id="sliderButton" class="button" title="Adjust Image">
+            <svg class="icon" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+        </button>
+        <button id="transformButton" class="button" title="Transform">
+            <svg class="icon" viewBox="0 0 24 24">
+                <path d="M17 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h10z"></path>
+                <path d="M12 17l5-5-5-5"></path>
+                <path d="M7 12h10"></path>
+            </svg>
+        </button>
+        <button id="gridButton" class="button" title="Toggle Grid">
+            <svg class="icon" viewBox="0 0 24 24">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+        </button>
+        <button id="themeButton" class="button" title="Theme Settings">
+            <svg class="icon" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+        </button>
+        <button id="undoButton" class="button" title="Undo" disabled>
+            <svg class="icon" viewBox="0 0 24 24">
+                <path d="M3 10h10a8 8 0 0 1 8 8v2M3 10l6 6M3 10l6-6"></path>
+            </svg>
+        </button>
+        <button id="redoButton" class="button" title="Redo" disabled>
+            <svg class="icon" viewBox="0 0 24 24">
+                <path d="M21 10H11a8 8 0 0 0-8 8v2M21 10l-6 6M21 10l-6-6"></path>
+            </svg>
+        </button>
+        <button id="accessibilityButton" class="button" title="Accessibility">
+            <svg class="icon" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 8v4"></path>
+                <path d="M12 16h.01"></path>
+            </svg>
+        </button>
+        <button id="resetButton" class="button" title="Reset All">
+            <svg class="icon" viewBox="0 0 24 24">
+                <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path>
+                <path d="M21 3v5h-5"></path>
+            </svg>
+        </button>
+    </div>
+
+    <div class="side-panel">
+        <button id="lockButton" class="button" title="Lock/Unlock Interface">
+            <svg class="icon" viewBox="0 0 24 24">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+        </button>
+    </div>
+    
+    <div class="menu-overlay" id="menuOverlay"></div>
     
     <div id="uploadMenu" class="menu">
-        <div class="menu-header">Upload Image</div>
-        <input type="file" id="fileInput" accept="image/*">
-        <input type="text" id="urlInput" placeholder="Or paste an image URL">
+        <div class="menu-header">
+            Upload Image
+            <button class="menu-close" id="closeUploadMenu">&times;</button>
+        </div>
+        <div class="form-group">
+            <label for="fileInput">Select an image from your device</label>
+            <input type="file" id="fileInput" accept="image/*">
+        </div>
+        <div class="form-group">
+            <label for="urlInput">Or paste an image URL</label>
+            <input type="text" id="urlInput" placeholder="https://example.com/image.jpg">
+        </div>
         <button id="loadUrl">Load from URL</button>
     </div>
     
     <div id="sliderMenu" class="menu">
-        <div class="menu-header">Image Adjustments</div>
-        <label>Contrast</label>
-        <input type="range" id="contrastSlider" min="0" max="3" step="0.1" value="1">
-        <label>Exposure</label>
-        <input type="range" id="exposureSlider" min="0.5" max="2" step="0.1" value="1">
-        <label>Opacity</label>
-        <input type="range" id="opacitySlider" min="0.1" max="1" step="0.1" value="1">
+        <div class="menu-header">
+            Image Adjustments
+            <button class="menu-close" id="closeSliderMenu">&times;</button>
+        </div>
+        <div class="form-group">
+            <label for="contrastSlider">Contrast</label>
+            <div class="slider-container">
+                <input type="range" id="contrastSlider" min="0" max="3" step="0.1" value="1">
+                <span class="slider-value" id="contrastValue">1.0</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="exposureSlider">Exposure</label>
+            <div class="slider-container">
+                <input type="range" id="exposureSlider" min="0.5" max="2" step="0.1" value="1">
+                <span class="slider-value" id="exposureValue">1.0</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="opacitySlider">Opacity</label>
+            <div class="slider-container">
+                <input type="range" id="opacitySlider" min="0.1" max="1" step="0.1" value="1">
+                <span class="slider-value" id="opacityValue">1.0</span>
+            </div>
+        </div>
     </div>
     
     <div id="themeMenu" class="menu">
-        <div class="menu-header">Theme Settings</div>
-        <div class="color-group">
-            <label>Background Color</label>
-            <input type="color" id="bgColor" value="#121212">
+        <div class="menu-header">
+            Theme Settings
+            <button class="menu-close" id="closeThemeMenu">&times;</button>
         </div>
-        <div class="color-group">
-            <label>Grid Color</label>
+        <div class="form-group">
+            <label for="bgColor">Background Color</label>
+            <input type="color" id="bgColor" value="#0F172A">
+        </div>
+        <div class="form-group">
+            <label for="gridColor">Grid Color</label>
             <input type="color" id="gridColor" value="#ffffff">
-            <label>Grid Opacity</label>
-            <input type="range" id="gridOpacity" min="0.1" max="1" step="0.1" value="0.2">
+        </div>
+        <div class="form-group">
+            <label for="gridOpacity">Grid Opacity</label>
+            <div class="slider-container">
+                <input type="range" id="gridOpacity" min="0.1" max="1" step="0.1" value="0.2">
+                <span class="slider-value" id="gridOpacityValue">0.2</span>
+            </div>
         </div>
     </div>
 
     <div id="transformMenu" class="menu">
-        <div class="menu-header">Transform Image</div>
-        <label>Rotation (degrees)</label>
-        <input type="number" id="rotationInput" value="0" min="-180" max="180">
-        <label>Zoom</label>
-        <input type="range" id="zoomSlider" min="0.5" max="3" step="0.1" value="1">
-        <button class="transform-button" id="flipHorizontal">Flip Horizontal</button>
-        <button class="transform-button" id="flipVertical">Flip Vertical</button>
+        <div class="menu-header">
+            Transform Image
+            <button class="menu-close" id="closeTransformMenu">&times;</button>
+        </div>
+        <div class="form-group">
+            <label for="rotationInput">Rotation (degrees)</label>
+            <input type="number" id="rotationInput" value="0" min="-180" max="180">
+        </div>
+        <div class="form-group">
+            <label for="zoomSlider">Zoom</label>
+            <div class="slider-container">
+                <input type="range" id="zoomSlider" min="0.5" max="3" step="0.1" value="1">
+                <span class="slider-value" id="zoomValue">1.0</span>
+            </div>
+        </div>
+        <div class="button-group">
+            <button class="transform-button" id="flipHorizontal">Flip Horizontal</button>
+            <button class="transform-button" id="flipVertical">Flip Vertical</button>
+        </div>
     </div>
 
     <div id="accessibilityMenu" class="menu">
-        <div class="menu-header">Accessibility</div>
-        <button class="transform-button" id="highContrastToggle">High Contrast Mode</button>
-        <button class="transform-button" id="showShortcuts">Show Keyboard Shortcuts</button>
-        <label>UI Scale</label>
-        <input type="range" id="uiScale" min="0.8" max="1.5" step="0.1" value="1">
-    </div>
-
-    <div id="referenceMenu" class="menu">
-        <div class="menu-header">Reference Tools</div>
-        <button class="transform-button" id="colorPickerTool">Color Picker</button>
-        <button class="transform-button" id="measurementTool">Measurement Tool</button>
-        <button class="transform-button" id="angleTool">Angle Tool</button>
+        <div class="menu-header">
+            Accessibility
+            <button class="menu-close" id="closeAccessibilityMenu">&times;</button>
+        </div>
+        <div class="form-group">
+            <label for="uiScale">UI Scale</label>
+            <div class="slider-container">
+                <input type="range" id="uiScale" min="0.8" max="1.5" step="0.1" value="1">
+                <span class="slider-value" id="uiScaleValue">1.0</span>
+            </div>
+        </div>
     </div>
     
     <div id="grid"></div>
     <div id="imageContainer"></div>
-    <div id="colorPicker"></div>
-    <div id="measureTool"><div id="measureValue"></div></div>
-    <div class="keyboard-shortcuts">
-        <span class="shortcut-key">Ctrl+Z</span> Undo
-        <span class="shortcut-key">Ctrl+Y</span> Redo
-        <span class="shortcut-key">Ctrl+R</span> Reset
-        <span class="shortcut-key">G</span> Toggle Grid
-        <span class="shortcut-key">L</span> Lock/Unlock
+    <div class="keyboard-shortcuts" id="keyboardShortcuts">
+        <h3 style="margin-bottom: 16px;">Keyboard Shortcuts</h3>
+        <div class="shortcut-list">
+            <div class="shortcut-item">
+                <span class="shortcut-key">Ctrl+Z</span> Undo
+            </div>
+            <div class="shortcut-item">
+                <span class="shortcut-key">Ctrl+Y</span> Redo
+            </div>
+            <div class="shortcut-item">
+                <span class="shortcut-key">Ctrl+R</span> Reset
+            </div>
+            <div class="shortcut-item">
+                <span class="shortcut-key">G</span> Toggle Grid
+            </div>
+            <div class="shortcut-item">
+                <span class="shortcut-key">L</span> Lock/Unlock
+            </div>
+            <div class="shortcut-item">
+                <span class="shortcut-key">Esc</span> Close Menu
+            </div>
+        </div>
     </div>
     
     <script>
@@ -462,6 +743,9 @@
         const contrastSlider = document.getElementById('contrastSlider');
         const exposureSlider = document.getElementById('exposureSlider');
         const opacitySlider = document.getElementById('opacitySlider');
+        const contrastValue = document.getElementById('contrastValue');
+        const exposureValue = document.getElementById('exposureValue');
+        const opacityValue = document.getElementById('opacityValue');
         const resetButton = document.getElementById('resetButton');
         const gridButton = document.getElementById('gridButton');
         const grid = document.getElementById('grid');
@@ -470,28 +754,28 @@
         const bgColor = document.getElementById('bgColor');
         const gridColor = document.getElementById('gridColor');
         const gridOpacity = document.getElementById('gridOpacity');
+        const gridOpacityValue = document.getElementById('gridOpacityValue');
         const transformButton = document.getElementById('transformButton');
         const transformMenu = document.getElementById('transformMenu');
         const rotationInput = document.getElementById('rotationInput');
         const zoomSlider = document.getElementById('zoomSlider');
+        const zoomValue = document.getElementById('zoomValue');
         const flipHorizontal = document.getElementById('flipHorizontal');
         const flipVertical = document.getElementById('flipVertical');
         const undoButton = document.getElementById('undoButton');
         const redoButton = document.getElementById('redoButton');
         const accessibilityButton = document.getElementById('accessibilityButton');
         const accessibilityMenu = document.getElementById('accessibilityMenu');
-        const referenceButton = document.getElementById('referenceButton');
-        const referenceMenu = document.getElementById('referenceMenu');
-        const colorPickerTool = document.getElementById('colorPickerTool');
-        const measurementTool = document.getElementById('measurementTool');
-        const angleTool = document.getElementById('angleTool');
-        const colorPicker = document.getElementById('colorPicker');
-        const measureTool = document.getElementById('measureTool');
-        const measureValue = document.getElementById('measureValue');
-        const highContrastToggle = document.getElementById('highContrastToggle');
-        const showShortcuts = document.getElementById('showShortcuts');
         const uiScale = document.getElementById('uiScale');
-        const keyboardShortcuts = document.querySelector('.keyboard-shortcuts');
+        const uiScaleValue = document.getElementById('uiScaleValue');
+        const keyboardShortcuts = document.getElementById('keyboardShortcuts');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const closeUploadMenu = document.getElementById('closeUploadMenu');
+        const closeSliderMenu = document.getElementById('closeSliderMenu');
+        const closeThemeMenu = document.getElementById('closeThemeMenu');
+        const closeTransformMenu = document.getElementById('closeTransformMenu');
+        const closeAccessibilityMenu = document.getElementById('closeAccessibilityMenu');
+        const buttonContainer = document.getElementById('buttonContainer');
         
         let locked = false;
         let imgElement = null;
@@ -500,16 +784,40 @@
         let isFlippedV = false;
         let undoStack = [];
         let redoStack = [];
-        let isColorPickerActive = false;
-        let isMeasuring = false;
-        let startPoint = null;
-        let highContrastMode = false;
+
+        // Check if all elements exist
+        if (!closeAccessibilityMenu) {
+            console.error("Some elements are missing. Creating missing close buttons.");
+            
+            // Create missing close buttons if they don't exist
+            Object.entries(menus).forEach(([key, menu]) => {
+                const closeId = `close${key.charAt(0).toUpperCase() + key.slice(1)}Menu`;
+                let closeButton = document.getElementById(closeId);
+                
+                if (!closeButton) {
+                    const header = menu.querySelector('.menu-header');
+                    if (header) {
+                        closeButton = document.createElement('button');
+                        closeButton.id = closeId;
+                        closeButton.className = 'menu-close';
+                        closeButton.innerHTML = '&times;';
+                        header.appendChild(closeButton);
+                        
+                        // Update the closeButtons object
+                        closeButtons[key] = closeButton;
+                        
+                        // Add event listener
+                        closeButton.addEventListener('click', closeAllMenus);
+                    }
+                }
+            });
+        }
 
         const defaultSettings = {
             contrast: 1,
             exposure: 1,
             opacity: 1,
-            backgroundColor: '#121212',
+            backgroundColor: '#0F172A',
             gridColor: '#ffffff',
             gridOpacity: 0.2,
             rotation: 0,
@@ -581,6 +889,7 @@
             zoomSlider.value = state.zoom;
             isFlippedH = state.isFlippedH;
             isFlippedV = state.isFlippedV;
+            updateSliderValues();
             updateFilters();
             updateTransform();
         }
@@ -588,8 +897,27 @@
         function updateUndoRedoButtons() {
             undoButton.disabled = undoStack.length === 0;
             redoButton.disabled = redoStack.length === 0;
-            undoButton.style.opacity = undoStack.length === 0 ? '0.5' : '1';
-            redoButton.style.opacity = redoStack.length === 0 ? '0.5' : '1';
+            
+            if (undoStack.length === 0) {
+                undoButton.classList.remove('enabled');
+            } else {
+                undoButton.classList.add('enabled');
+            }
+            
+            if (redoStack.length === 0) {
+                redoButton.classList.remove('enabled');
+            } else {
+                redoButton.classList.add('enabled');
+            }
+        }
+
+        function updateSliderValues() {
+            contrastValue.textContent = parseFloat(contrastSlider.value).toFixed(1);
+            exposureValue.textContent = parseFloat(exposureSlider.value).toFixed(1);
+            opacityValue.textContent = parseFloat(opacitySlider.value).toFixed(1);
+            zoomValue.textContent = parseFloat(zoomSlider.value).toFixed(1);
+            gridOpacityValue.textContent = parseFloat(gridOpacity.value).toFixed(1);
+            uiScaleValue.textContent = parseFloat(uiScale.value).toFixed(1);
         }
 
         function loadSavedSettings() {
@@ -610,6 +938,7 @@
                 updateGridColor();
                 updateTransform();
                 updateFilters();
+                updateSliderValues();
             }
         }
 
@@ -650,6 +979,11 @@
             createGrid();
             loadSavedSettings();
             updateUndoRedoButtons();
+            updateButtonStates();
+            updateSliderValues();
+            
+            // Show keyboard shortcuts by default
+            keyboardShortcuts.style.display = 'block';
         });
 
         const menus = {
@@ -657,8 +991,7 @@
             slider: sliderMenu,
             theme: themeMenu,
             transform: transformMenu,
-            accessibility: accessibilityMenu,
-            reference: referenceMenu
+            accessibility: accessibilityMenu
         };
 
         const menuButtons = {
@@ -666,48 +999,76 @@
             slider: sliderButton,
             theme: themeButton,
             transform: transformButton,
-            accessibility: accessibilityButton,
-            reference: referenceButton
+            accessibility: accessibilityButton
+        };
+
+        const closeButtons = {
+            upload: closeUploadMenu,
+            slider: closeSliderMenu,
+            theme: closeThemeMenu,
+            transform: closeTransformMenu,
+            accessibility: closeAccessibilityMenu
         };
 
         const allButtons = [
             uploadButton, sliderButton, resetButton, gridButton,
             themeButton, transformButton, undoButton, redoButton,
-            accessibilityButton, referenceButton
+            accessibilityButton
         ];
 
         function toggleButtonsLock(isLocked) {
-            allButtons.forEach(button => {
-                if (isLocked) {
-                    button.classList.add('hidden');
-                } else {
-                    button.classList.remove('hidden');
-                }
-            });
+            // Hide/show the button container
+            buttonContainer.style.display = isLocked ? 'none' : 'flex';
+            
+            // Hide/show the keyboard shortcuts
+            keyboardShortcuts.style.display = isLocked ? 'none' : 'block';
             
             if (isLocked) {
                 Object.values(menus).forEach(menu => {
                     menu.style.display = 'none';
-                    menu.classList.add('hidden');
-                });
-            } else {
-                Object.values(menus).forEach(menu => {
-                    menu.classList.remove('hidden');
+                    menuOverlay.style.display = 'none';
                 });
             }
         }
 
-        Object.entries(menuButtons).forEach(([key, button]) => {
-            button.addEventListener('click', () => {
-                if (!locked) {
-                    const targetMenu = menus[key];
-                    Object.values(menus).forEach(menu => {
-                        if (menu !== targetMenu) menu.style.display = 'none';
-                    });
-                    targetMenu.style.display = targetMenu.style.display === 'flex' ? 'none' : 'flex';
-                }
+        function showMenu(menuKey) {
+            const targetMenu = menus[menuKey];
+            Object.values(menus).forEach(menu => {
+                menu.style.display = 'none';
             });
+            targetMenu.style.display = 'flex';
+            menuOverlay.style.display = 'block';
+        }
+
+        function closeAllMenus() {
+            Object.values(menus).forEach(menu => {
+                menu.style.display = 'none';
+            });
+            menuOverlay.style.display = 'none';
+        }
+
+        Object.entries(menuButtons).forEach(([key, button]) => {
+            if (button) {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Stop event propagation
+                    if (!locked) {
+                        showMenu(key);
+                    }
+                });
+            }
         });
+
+        // Make sure close buttons work
+        Object.values(closeButtons).forEach(button => {
+            if (button) {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Stop event propagation
+                    closeAllMenus();
+                });
+            }
+        });
+
+        menuOverlay.addEventListener('click', closeAllMenus);
 
         function loadImage(src) {
             imageContainer.innerHTML = `<img src="${src}" alt="Uploaded Image">`;
@@ -729,6 +1090,28 @@
             undoStack = [];
             redoStack = [];
             updateUndoRedoButtons();
+            updateButtonStates();
+            closeAllMenus();
+        }
+
+        function updateButtonStates() {
+            // Enable all buttons when an image is loaded
+            if (imgElement) {
+                allButtons.forEach(button => {
+                    if (button !== lockButton) {
+                        button.classList.add('enabled');
+                    }
+                });
+            } else {
+                // Disable certain buttons when no image is loaded
+                [sliderButton, transformButton, undoButton, redoButton].forEach(button => {
+                    button.classList.remove('enabled');
+                    if (button === undoButton || button === redoButton) {
+                        button.disabled = true;
+                    }
+                });
+            }
+            updateUndoRedoButtons();
         }
 
         fileInput.addEventListener('change', (event) => {
@@ -738,24 +1121,17 @@
                 reader.onload = (e) => loadImage(e.target.result);
                 reader.readAsDataURL(file);
             }
-            uploadMenu.style.display = 'none';
         });
 
         loadUrl.addEventListener('click', () => {
             const url = urlInput.value;
             if (url) loadImage(url);
-            uploadMenu.style.display = 'none';
         });
 
         function updateFilters() {
             if (imgElement) {
                 imgElement.style.filter = `contrast(${contrastSlider.value}) brightness(${exposureSlider.value})`;
                 imgElement.style.opacity = opacitySlider.value;
-                if (highContrastMode) {
-                    imgElement.classList.add('high-contrast');
-                } else {
-                    imgElement.classList.remove('high-contrast');
-                }
             }
             saveSettings();
         }
@@ -778,12 +1154,16 @@
         [contrastSlider, exposureSlider, opacitySlider].forEach(slider => {
             slider.addEventListener('input', () => {
                 updateFilters();
+                updateSliderValues();
                 saveState();
             });
         });
 
         [gridColor, gridOpacity].forEach(input => {
-            input.addEventListener('input', updateGridColor);
+            input.addEventListener('input', () => {
+                updateGridColor();
+                updateSliderValues();
+            });
         });
 
         rotationInput.addEventListener('input', () => {
@@ -793,7 +1173,13 @@
 
         zoomSlider.addEventListener('input', () => {
             updateTransform();
+            updateSliderValues();
             saveState();
+        });
+
+        uiScale.addEventListener('input', () => {
+            document.documentElement.style.fontSize = uiScale.value + 'em';
+            updateSliderValues();
         });
 
         flipHorizontal.addEventListener('click', () => {
@@ -808,7 +1194,8 @@
             saveState();
         });
 
-        resetButton.addEventListener('click', () => {
+        resetButton.addEventListener('click', (e) => {
+            e.stopPropagation();
             if (!locked) {
                 saveState();
                 contrastSlider.value = defaultSettings.contrast;
@@ -826,16 +1213,16 @@
                 imageContainer.innerHTML = '';
                 imgElement = null;
                 
-                Object.values(menus).forEach(menu => {
-                    menu.style.display = 'none';
-                });
+                closeAllMenus();
                 
                 grid.style.display = 'none';
                 
                 updateGridColor();
                 updateFilters();
                 updateTransform();
+                updateSliderValues();
                 saveSettings();
+                updateButtonStates();
             }
         });
 
@@ -857,7 +1244,8 @@
             updateGridColor();
         }
 
-        gridButton.addEventListener('click', () => {
+        gridButton.addEventListener('click', (e) => {
+            e.stopPropagation();
             if (!locked) {
                 grid.style.display = grid.style.display === 'none' ? 'block' : 'none';
             }
@@ -865,14 +1253,29 @@
 
         window.addEventListener('resize', createGrid);
 
-        lockButton.addEventListener('click', () => {
+        lockButton.addEventListener('click', (e) => {
+            e.stopPropagation(); // Stop event propagation
             locked = !locked;
             document.body.style.touchAction = locked ? 'none' : 'auto';
             toggleButtonsLock(locked);
-            lockButton.textContent = locked ? 'Unlock' : 'Lock';
-            lockButton.style.background = locked 
-                ? 'linear-gradient(135deg, #22C55E, #16A34A)'
-                : 'linear-gradient(135deg, #FF4B4B, #FF7676)';
+            
+            if (locked) {
+                lockButton.classList.add('locked');
+                lockButton.innerHTML = `
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                `;
+            } else {
+                lockButton.classList.remove('locked');
+                lockButton.innerHTML = `
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                `;
+            }
         });
 
         bgColor.addEventListener('input', (e) => {
@@ -895,75 +1298,25 @@
                 gridButton.click();
             } else if (e.key === 'l') {
                 lockButton.click();
+            } else if (e.key === 'Escape') {
+                closeAllMenus();
             }
         });
 
-        // Color Picker Tool
-        colorPickerTool.addEventListener('click', () => {
-            isColorPickerActive = !isColorPickerActive;
-            colorPicker.style.display = isColorPickerActive ? 'block' : 'none';
-            document.body.style.cursor = isColorPickerActive ? 'crosshair' : 'default';
-        });
+        // Remove the showShortcuts button and functionality since shortcuts are always shown
+        if (document.getElementById('showShortcuts')) {
+            document.getElementById('showShortcuts').remove();
+        }
 
-        document.addEventListener('mousemove', (e) => {
-            if (isColorPickerActive) {
-                colorPicker.style.left = (e.clientX - 15) + 'px';
-                colorPicker.style.top = (e.clientY - 15) + 'px';
-            }
+        undoButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            undo();
         });
-
-        // Measurement Tool
-        measurementTool.addEventListener('click', () => {
-            isMeasuring = !isMeasuring;
-            document.body.style.cursor = isMeasuring ? 'crosshair' : 'default';
+        redoButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            redo();
         });
-
-        document.addEventListener('mousedown', (e) => {
-            if (isMeasuring) {
-                startPoint = { x: e.clientX, y: e.clientY };
-                measureTool.style.display = 'block';
-                measureTool.style.left = startPoint.x + 'px';
-                measureTool.style.top = startPoint.y + 'px';
-            }
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if (isMeasuring && startPoint) {
-                const dx = e.clientX - startPoint.x;
-                const dy = e.clientY - startPoint.y;
-                const length = Math.sqrt(dx * dx + dy * dy);
-                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-                
-                measureTool.style.width = length + 'px';
-                measureTool.style.transform = `rotate(${angle}deg)`;
-                measureValue.textContent = `${Math.round(length)}px / ${Math.round(angle)}°`;
-                measureValue.style.left = (length / 2) + 'px';
-            }
-        });
-
-        document.addEventListener('mouseup', () => {
-            if (isMeasuring) {
-                startPoint = null;
-                measureTool.style.display = 'none';
-            }
-        });
-
-        // Accessibility Features
-        highContrastToggle.addEventListener('click', () => {
-            highContrastMode = !highContrastMode;
-            updateFilters();
-        });
-
-        showShortcuts.addEventListener('click', () => {
-            keyboardShortcuts.style.display = keyboardShortcuts.style.display === 'none' ? 'block' : 'none';
-        });
-
-        uiScale.addEventListener('input', (e) => {
-            document.documentElement.style.fontSize = e.target.value + 'em';
-        });
-
-        undoButton.addEventListener('click', undo);
-        redoButton.addEventListener('click', redo);
     </script>
 </body>
 </html>
+
