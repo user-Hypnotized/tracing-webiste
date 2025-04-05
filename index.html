@@ -361,21 +361,27 @@
             align-items: center;
         }
 
-        .menu-close {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 18px; /* Reduced from 24px */
-            padding: 0;
-            width: 9px;
-            height: 4px;
-            line-height: 1;
-        }
+ .menu-close {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 12px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    padding: 0;
+    transition: var(--transition);
+}
 
-        .menu-close:hover {
-            color: var(--text);
-        }
+.menu-close:hover {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.1);
+}
 
         #urlInput {
             margin-bottom: 10px;
