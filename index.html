@@ -1982,6 +1982,17 @@
         }
 
         savePreset.addEventListener('click', savePresetToStorage);
+
+
+
+    document.querySelectorAll('.menu input[type="range"]').forEach(slider => {
+    function updateBackground() {
+        const val = (slider.value - slider.min) / (slider.max - slider.min) * 100;
+        slider.style.background = `linear-gradient(to right, var(--primary) 0%, var(--primary) ${val}%, rgba(255, 255, 255, 0.1) ${val}%, rgba(255, 255, 255, 0.1) 100%)`;
+    }
+    slider.addEventListener('input', updateBackground);
+    updateBackground();
+});        
     </script>
 </body>
 </html>
