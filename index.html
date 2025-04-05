@@ -269,46 +269,50 @@
 .menu input[type="range"] {
     -webkit-appearance: none;
     width: 100%;
-    height: 6px;
-    border-radius: 5px;
-    background: linear-gradient(to right, var(--primary) 0%, var(--primary) 50%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.1) 100%);
+    height: 8px;
+    border-radius: 6px;
+    background: linear-gradient(to right, var(--primary) 50%, rgba(255, 255, 255, 0.1) 50%);
     background-size: 100% 100%;
     background-repeat: no-repeat;
     outline: none;
-    transition: background 0.3s ease;
     cursor: pointer;
+    transition: background 0.3s ease;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .menu input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    height: 18px;
-    width: 18px;
+    height: 22px;
+    width: 22px;
     border-radius: 50%;
     background: var(--primary);
-    border: 2px solid white;
-    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.5);
-    cursor: pointer;
-    transition: transform 0.2s ease;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2), 0 2px 6px rgba(0, 0, 0, 0.3);
+    border: 2px solid #fff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    margin-top: -7px; /* center thumb vertically */
 }
 
 .menu input[type="range"]::-webkit-slider-thumb:hover {
     transform: scale(1.2);
+    box-shadow: 0 0 0 6px rgba(79, 70, 229, 0.3), 0 4px 10px rgba(0, 0, 0, 0.4);
 }
 
 .menu input[type="range"]::-moz-range-thumb {
-    height: 18px;
-    width: 18px;
+    height: 22px;
+    width: 22px;
     border-radius: 50%;
     background: var(--primary);
-    border: 2px solid white;
-    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.5);
-    cursor: pointer;
-    transition: transform 0.2s ease;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2), 0 2px 6px rgba(0, 0, 0, 0.3);
+    border: 2px solid #fff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .menu input[type="range"]::-moz-range-thumb:hover {
     transform: scale(1.2);
+    box-shadow: 0 0 0 6px rgba(79, 70, 229, 0.3), 0 4px 10px rgba(0, 0, 0, 0.4);
 }
+
 
         
         .menu button {
@@ -1992,7 +1996,18 @@
     }
     slider.addEventListener('input', updateBackground);
     updateBackground();
-});        
+});
+    document.querySelectorAll('.menu input[type="range"]').forEach(slider => {
+    function updateSliderBackground(slider) {
+        const min = slider.min || 0;
+        const max = slider.max || 100;
+        const val = ((slider.value - min) / (max - min)) * 100;
+        slider.style.background = `linear-gradient(to right, var(--primary) 0%, var(--primary) ${val}%, rgba(255, 255, 255, 0.1) ${val}%, rgba(255, 255, 255, 0.1) 100%)`;
+    }
+
+    slider.addEventListener('input', () => updateSliderBackground(slider));
+    updateSliderBackground(slider);
+});   
     </script>
 </body>
 </html>
