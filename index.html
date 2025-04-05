@@ -266,39 +266,50 @@
             touch-action: manipulation;
         }
 
-        .menu input[type="range"] {
-            -webkit-appearance: none;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            outline: none;
-            border: none;
-            margin: 10px 0;
-        }
+.menu input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 5px;
+    background: linear-gradient(to right, var(--primary) 0%, var(--primary) 50%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.1) 100%);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    outline: none;
+    transition: background 0.3s ease;
+    cursor: pointer;
+}
 
-        .menu input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 18px;
-            height: 18px;
-            background: var(--primary);
-            border-radius: 50%;
-            cursor: pointer;
-            transition: var(--transition);
-        }
+.menu input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background: var(--primary);
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.5);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
 
-        .menu input[type="range"]::-webkit-slider-thumb:hover {
-            transform: scale(1.1);
-        }
+.menu input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
 
-        .menu input[type="file"] {
-            padding: 8px;
-        }
+.menu input[type="range"]::-moz-range-thumb {
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background: var(--primary);
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.5);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
 
-        .menu input[type="color"] {
-            height: 40px;
-            padding: 4px;
-            cursor: pointer;
-        }
+.menu input[type="range"]::-moz-range-thumb:hover {
+    transform: scale(1.2);
+}
+
         
         .menu button {
             background: var(--primary);
