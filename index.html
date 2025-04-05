@@ -93,7 +93,7 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid var(--border);
-            transition: opacity 0.3s ease, visibility 0.3s ease;
+            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
         }
 
         .side-panel {
@@ -122,6 +122,28 @@
             gap: 8px;
             min-width: 44px;
             height: 44px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+
+        .button:active::after {
+            transform: translate(-50%, -50%) scale(2);
+            opacity: 1;
+            transition: transform 0.2s ease, opacity 0.1s ease;
         }
 
         .button svg {
@@ -362,26 +384,26 @@
         }
 
         .menu-close {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    color: var(--text-secondary);
-    cursor: pointer;
-    font-size: 16px;
-    padding: 0;
-    width: 5px;
-    height: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-    transition: var(--transition);
-}
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0;
+            width: 5px;
+            height: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            transition: var(--transition);
+        }
 
-.menu-close:hover {
-    color: var(--text);
-    background: rgba(255, 255, 255, 0.1);
-}
+        .menu-close:hover {
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.1);
+        }
 
         #urlInput {
             margin-bottom: 10px;
@@ -406,6 +428,10 @@
             left: 50%;
             transform: translateX(-50%);
             margin-bottom: 8px;
+            z-index: 20;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 200px;
+            text-align: center;
         }
 
         .button:hover .tooltip {
@@ -482,6 +508,249 @@
             flex: 1;
         }
 
+        /* Tutorial Overlay */
+        .tutorial-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .tutorial-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .tutorial-content {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 24px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .tutorial-header {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tutorial-step {
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .tutorial-step.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tutorial-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 24px;
+        }
+
+        .tutorial-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            padding: 10px 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .tutorial-button:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .tutorial-button:disabled {
+            background: rgba(79, 70, 229, 0.5);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .tutorial-skip {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .tutorial-skip:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tutorial-progress {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .progress-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+        }
+
+        .progress-dot.active {
+            background: var(--primary);
+        }
+
+        /* Confirmation Dialog */
+        .confirmation-dialog {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 24px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: var(--shadow-lg);
+            z-index: 1001;
+            border: 1px solid var(--border);
+            display: none;
+        }
+
+        .confirmation-dialog.active {
+            display: block;
+            animation: scaleIn 0.3s ease;
+        }
+
+        @keyframes scaleIn {
+            from { transform: translate(-50%, -50%) scale(0.9); opacity: 0; }
+            to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        .confirmation-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text);
+        }
+
+        .confirmation-message {
+            margin-bottom: 24px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .confirmation-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .confirmation-button {
+            padding: 10px 16px;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .confirmation-cancel {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .confirmation-cancel:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .confirmation-confirm {
+            background: var(--danger);
+            color: white;
+            border: none;
+        }
+
+        .confirmation-confirm:hover {
+            background: var(--danger-hover);
+        }
+
+        /* Presets Menu */
+        #presetsMenu {
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .preset-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .preset-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .preset-name {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .preset-delete {
+            color: var(--danger);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+
+        .preset-delete:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .preset-info {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
         @media (max-width: 768px) {
             .button-container {
                 flex-wrap: wrap;
@@ -520,12 +789,14 @@
                 <polyline points="17 8 12 3 7 8"></polyline>
                 <line x1="12" y1="3" x2="12" y2="15"></line>
             </svg>
+            <span class="tooltip">Upload a new image from your device or URL</span>
         </button>
         <button id="sliderButton" class="button" title="Adjust Image">
             <svg class="icon" viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="3"></circle>
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
             </svg>
+            <span class="tooltip">Adjust contrast, brightness, and opacity</span>
         </button>
         <button id="transformButton" class="button" title="Transform">
             <svg class="icon" viewBox="0 0 24 24">
@@ -533,6 +804,7 @@
                 <path d="M12 17l5-5-5-5"></path>
                 <path d="M7 12h10"></path>
             </svg>
+            <span class="tooltip">Rotate, zoom, and flip the image</span>
         </button>
         <button id="gridButton" class="button" title="Toggle Grid">
             <svg class="icon" viewBox="0 0 24 24">
@@ -541,6 +813,7 @@
                 <rect x="14" y="14" width="7" height="7"></rect>
                 <rect x="3" y="14" width="7" height="7"></rect>
             </svg>
+            <span class="tooltip">Show/hide grid overlay for precise tracing</span>
         </button>
         <button id="themeButton" class="button" title="Theme Settings">
             <svg class="icon" viewBox="0 0 24 24">
@@ -554,16 +827,19 @@
                 <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
                 <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
             </svg>
+            <span class="tooltip">Customize background and grid colors</span>
         </button>
         <button id="undoButton" class="button" title="Undo" disabled>
             <svg class="icon" viewBox="0 0 24 24">
                 <path d="M3 10h10a8 8 0 0 1 8 8v2M3 10l6 6M3 10l6-6"></path>
             </svg>
+            <span class="tooltip">Undo the last action (Ctrl+Z)</span>
         </button>
         <button id="redoButton" class="button" title="Redo" disabled>
             <svg class="icon" viewBox="0 0 24 24">
                 <path d="M21 10H11a8 8 0 0 0-8 8v2M21 10l-6 6M21 10l-6-6"></path>
             </svg>
+            <span class="tooltip">Redo the last undone action (Ctrl+Y)</span>
         </button>
         <button id="accessibilityButton" class="button" title="Accessibility">
             <svg class="icon" viewBox="0 0 24 24">
@@ -571,12 +847,22 @@
                 <path d="M12 8v4"></path>
                 <path d="M12 16h.01"></path>
             </svg>
+            <span class="tooltip">Adjust UI scale for better visibility</span>
         </button>
         <button id="resetButton" class="button" title="Reset All">
             <svg class="icon" viewBox="0 0 24 24">
                 <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path>
                 <path d="M21 3v5h-5"></path>
             </svg>
+            <span class="tooltip">Reset all settings and remove the image</span>
+        </button>
+        <button id="presetsButton" class="button" title="Presets">
+            <svg class="icon" viewBox="0 0 24 24">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                <polyline points="7 3 7 8 15 8"></polyline>
+            </svg>
+            <span class="tooltip">Save and load configuration presets</span>
         </button>
     </div>
 
@@ -586,6 +872,7 @@
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                 <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
             </svg>
+            <span class="tooltip">Lock the interface to prevent accidental changes</span>
         </button>
     </div>
     
@@ -692,6 +979,26 @@
             </div>
         </div>
     </div>
+
+    <div id="presetsMenu" class="menu">
+        <div class="menu-header">
+            Configuration Presets
+            <button class="menu-close" id="closePresetsMenu">&times;</button>
+        </div>
+        <div class="form-group">
+            <label for="presetName">Save current configuration</label>
+            <input type="text" id="presetName" placeholder="Enter preset name">
+            <button id="savePreset" class="transform-button" style="margin-top: 8px;">Save Preset</button>
+        </div>
+        <div class="form-group">
+            <label>Saved Presets</label>
+            <div id="presetsList">
+                <div class="preset-item">
+                    <div class="preset-name">No presets saved yet</div>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <div id="grid"></div>
     <div id="imageContainer"></div>
@@ -716,6 +1023,87 @@
             <div class="shortcut-item">
                 <span class="shortcut-key">Esc</span> Close Menu
             </div>
+        </div>
+    </div>
+
+    <!-- Tutorial Overlay -->
+    <div class="tutorial-overlay" id="tutorialOverlay">
+        <div class="tutorial-content">
+            <div class="tutorial-header">
+                Welcome to Tracing Screen
+                <button id="closeTutorial" class="menu-close">&times;</button>
+            </div>
+            
+            <div class="tutorial-step active" data-step="1">
+                <h3>Getting Started</h3>
+                <p>This tool helps you trace images with precision. Let's learn how to use it!</p>
+                <p>First, upload an image using the upload button at the bottom of the screen.</p>
+            </div>
+            
+            <div class="tutorial-step" data-step="2">
+                <h3>Adjusting Your Image</h3>
+                <p>Once your image is loaded, you can adjust its appearance:</p>
+                <ul>
+                    <li>Use the sliders to change contrast and brightness</li>
+                    <li>Adjust opacity to make tracing easier</li>
+                    <li>Transform the image with rotation and zoom</li>
+                </ul>
+            </div>
+            
+            <div class="tutorial-step" data-step="3">
+                <h3>Using the Grid</h3>
+                <p>The grid helps with precise tracing:</p>
+                <ul>
+                    <li>Toggle the grid with the grid button</li>
+                    <li>Customize grid color and opacity in Theme Settings</li>
+                </ul>
+            </div>
+            
+            <div class="tutorial-step" data-step="4">
+                <h3>Saving Your Work</h3>
+                <p>You can save your configurations as presets:</p>
+                <ul>
+                    <li>Click the presets button</li>
+                    <li>Name your configuration and save it</li>
+                    <li>Load it anytime for quick setup</li>
+                </ul>
+            </div>
+            
+            <div class="tutorial-step" data-step="5">
+                <h3>Keyboard Shortcuts</h3>
+                <p>Speed up your workflow with these shortcuts:</p>
+                <ul>
+                    <li><strong>Ctrl+Z</strong>: Undo</li>
+                    <li><strong>Ctrl+Y</strong>: Redo</li>
+                    <li><strong>G</strong>: Toggle Grid</li>
+                    <li><strong>L</strong>: Lock/Unlock Interface</li>
+                </ul>
+            </div>
+            
+            <div class="tutorial-navigation">
+                <button id="prevStep" class="tutorial-button tutorial-skip" disabled>Previous</button>
+                <button id="nextStep" class="tutorial-button">Next</button>
+            </div>
+            
+            <div class="tutorial-progress" id="tutorialProgress">
+                <div class="progress-dot active" data-step="1"></div>
+                <div class="progress-dot" data-step="2"></div>
+                <div class="progress-dot" data-step="3"></div>
+                <div class="progress-dot" data-step="4"></div>
+                <div class="progress-dot" data-step="5"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Dialog -->
+    <div class="confirmation-dialog" id="resetConfirmation">
+        <div class="confirmation-title">Reset All Settings?</div>
+        <div class="confirmation-message">
+            This will reset all adjustments, remove the current image, and return to default settings. This action cannot be undone.
+        </div>
+        <div class="confirmation-buttons">
+            <button id="cancelReset" class="confirmation-button confirmation-cancel">Cancel</button>
+            <button id="confirmReset" class="confirmation-button confirmation-confirm">Reset</button>
         </div>
     </div>
     
@@ -782,6 +1170,20 @@
         const closeTransformMenu = document.getElementById('closeTransformMenu');
         const closeAccessibilityMenu = document.getElementById('closeAccessibilityMenu');
         const buttonContainer = document.getElementById('buttonContainer');
+        const presetsButton = document.getElementById('presetsButton');
+        const presetsMenu = document.getElementById('presetsMenu');
+        const closePresetsMenu = document.getElementById('closePresetsMenu');
+        const presetName = document.getElementById('presetName');
+        const savePreset = document.getElementById('savePreset');
+        const presetsList = document.getElementById('presetsList');
+        const tutorialOverlay = document.getElementById('tutorialOverlay');
+        const closeTutorial = document.getElementById('closeTutorial');
+        const prevStep = document.getElementById('prevStep');
+        const nextStep = document.getElementById('nextStep');
+        const tutorialProgress = document.getElementById('tutorialProgress');
+        const resetConfirmation = document.getElementById('resetConfirmation');
+        const cancelReset = document.getElementById('cancelReset');
+        const confirmReset = document.getElementById('confirmReset');
         
         let locked = false;
         let imgElement = null;
@@ -790,6 +1192,8 @@
         let isFlippedV = false;
         let undoStack = [];
         let redoStack = [];
+        let currentTutorialStep = 1;
+        let totalTutorialSteps = 5;
 
         // Check if all elements exist
         if (!closeAccessibilityMenu) {
@@ -829,7 +1233,8 @@
             rotation: 0,
             zoom: 1,
             isFlippedH: false,
-            isFlippedV: false
+            isFlippedV: false,
+            uiScale: 1
         };
 
         function saveState() {
@@ -865,6 +1270,12 @@
                 const previousState = undoStack.pop();
                 applyState(previousState);
                 updateUndoRedoButtons();
+                
+                // Visual feedback for undo
+                buttonContainer.style.transform = 'translateX(-51%)';
+                setTimeout(() => {
+                    buttonContainer.style.transform = 'translateX(-50%)';
+                }, 150);
             }
         }
 
@@ -879,11 +1290,17 @@
                     isFlippedH,
                     isFlippedV
                 };
-                undoStack.push(currentState);
+                redoStack.push(currentState);
                 
                 const nextState = redoStack.pop();
                 applyState(nextState);
                 updateUndoRedoButtons();
+                
+                // Visual feedback for redo
+                buttonContainer.style.transform = 'translateX(-49%)';
+                setTimeout(() => {
+                    buttonContainer.style.transform = 'translateX(-50%)';
+                }, 150);
             }
         }
 
@@ -940,12 +1357,27 @@
                 zoomSlider.value = settings.zoom;
                 isFlippedH = settings.isFlippedH;
                 isFlippedV = settings.isFlippedV;
+                uiScale.value = settings.uiScale || defaultSettings.uiScale;
                 document.body.style.backgroundColor = settings.backgroundColor;
+                document.documentElement.style.fontSize = (settings.uiScale || 1) + 'em';
                 updateGridColor();
                 updateTransform();
                 updateFilters();
                 updateSliderValues();
             }
+            
+            // Check if first visit
+            const hasVisitedBefore = localStorage.getItem('hasVisitedBefore');
+            if (!hasVisitedBefore) {
+                // Show tutorial on first visit
+                setTimeout(() => {
+                    tutorialOverlay.classList.add('active');
+                }, 1000);
+                localStorage.setItem('hasVisitedBefore', 'true');
+            }
+            
+            // Load saved presets
+            loadPresets();
         }
 
         function saveSettings() {
@@ -959,7 +1391,8 @@
                 rotation: rotationInput.value,
                 zoom: zoomSlider.value,
                 isFlippedH,
-                isFlippedV
+                isFlippedV,
+                uiScale: uiScale.value
             };
             localStorage.setItem('tracingSettings', JSON.stringify(settings));
         }
@@ -997,7 +1430,8 @@
             slider: sliderMenu,
             theme: themeMenu,
             transform: transformMenu,
-            accessibility: accessibilityMenu
+            accessibility: accessibilityMenu,
+            presets: presetsMenu
         };
 
         const menuButtons = {
@@ -1005,7 +1439,8 @@
             slider: sliderButton,
             theme: themeButton,
             transform: transformButton,
-            accessibility: accessibilityButton
+            accessibility: accessibilityButton,
+            presets: presetsButton
         };
 
         const closeButtons = {
@@ -1013,21 +1448,43 @@
             slider: closeSliderMenu,
             theme: closeThemeMenu,
             transform: closeTransformMenu,
-            accessibility: closeAccessibilityMenu
+            accessibility: closeAccessibilityMenu,
+            presets: closePresetsMenu
         };
 
         const allButtons = [
             uploadButton, sliderButton, resetButton, gridButton,
             themeButton, transformButton, undoButton, redoButton,
-            accessibilityButton
+            accessibilityButton, presetsButton
         ];
 
         function toggleButtonsLock(isLocked) {
-            // Hide/show the button container
-            buttonContainer.style.display = isLocked ? 'none' : 'flex';
-            
-            // Hide/show the keyboard shortcuts
-            keyboardShortcuts.style.display = isLocked ? 'none' : 'block';
+            // Hide/show the button container with animation
+            if (isLocked) {
+                buttonContainer.style.transform = 'translateX(-50%) translateY(20px)';
+                buttonContainer.style.opacity = '0';
+                setTimeout(() => {
+                    buttonContainer.style.display = 'none';
+                }, 300);
+                
+                // Hide keyboard shortcuts with animation
+                keyboardShortcuts.style.opacity = '0';
+                setTimeout(() => {
+                    keyboardShortcuts.style.display = 'none';
+                }, 300);
+            } else {
+                buttonContainer.style.display = 'flex';
+                setTimeout(() => {
+                    buttonContainer.style.transform = 'translateX(-50%) translateY(0)';
+                    buttonContainer.style.opacity = '1';
+                }, 10);
+                
+                // Show keyboard shortcuts with animation
+                keyboardShortcuts.style.display = 'block';
+                setTimeout(() => {
+                    keyboardShortcuts.style.opacity = '1';
+                }, 10);
+            }
             
             if (isLocked) {
                 Object.values(menus).forEach(menu => {
@@ -1044,13 +1501,28 @@
             });
             targetMenu.style.display = 'flex';
             menuOverlay.style.display = 'block';
+            
+            // Add animation
+            targetMenu.style.opacity = '0';
+            targetMenu.style.transform = 'translate(-50%, -48%)';
+            setTimeout(() => {
+                targetMenu.style.opacity = '1';
+                targetMenu.style.transform = 'translate(-50%, -50%)';
+            }, 10);
         }
 
         function closeAllMenus() {
             Object.values(menus).forEach(menu => {
-                menu.style.display = 'none';
+                menu.style.opacity = '0';
+                menu.style.transform = 'translate(-50%, -52%)';
+                setTimeout(() => {
+                    menu.style.display = 'none';
+                }, 300);
             });
-            menuOverlay.style.display = 'none';
+            menuOverlay.style.opacity = '0';
+            setTimeout(() => {
+                menuOverlay.style.display = 'none';
+            }, 300);
         }
 
         Object.entries(menuButtons).forEach(([key, button]) => {
@@ -1186,6 +1658,7 @@
         uiScale.addEventListener('input', () => {
             document.documentElement.style.fontSize = uiScale.value + 'em';
             updateSliderValues();
+            saveSettings();
         });
 
         flipHorizontal.addEventListener('click', () => {
@@ -1203,33 +1676,46 @@
         resetButton.addEventListener('click', (e) => {
             e.stopPropagation();
             if (!locked) {
-                saveState();
-                contrastSlider.value = defaultSettings.contrast;
-                exposureSlider.value = defaultSettings.exposure;
-                opacitySlider.value = defaultSettings.opacity;
-                bgColor.value = defaultSettings.backgroundColor;
-                gridColor.value = defaultSettings.gridColor;
-                gridOpacity.value = defaultSettings.gridOpacity;
-                rotationInput.value = defaultSettings.rotation;
-                zoomSlider.value = defaultSettings.zoom;
-                isFlippedH = defaultSettings.isFlippedH;
-                isFlippedV = defaultSettings.isFlippedV;
-                document.body.style.backgroundColor = defaultSettings.backgroundColor;
-                
-                imageContainer.innerHTML = '';
-                imgElement = null;
-                
-                closeAllMenus();
-                
-                grid.style.display = 'none';
-                
-                updateGridColor();
-                updateFilters();
-                updateTransform();
-                updateSliderValues();
-                saveSettings();
-                updateButtonStates();
+                // Show confirmation dialog
+                resetConfirmation.classList.add('active');
+                menuOverlay.style.display = 'block';
             }
+        });
+
+        // Reset confirmation handlers
+        confirmReset.addEventListener('click', () => {
+            saveState();
+            contrastSlider.value = defaultSettings.contrast;
+            exposureSlider.value = defaultSettings.exposure;
+            opacitySlider.value = defaultSettings.opacity;
+            bgColor.value = defaultSettings.backgroundColor;
+            gridColor.value = defaultSettings.gridColor;
+            gridOpacity.value = defaultSettings.gridOpacity;
+            rotationInput.value = defaultSettings.rotation;
+            zoomSlider.value = defaultSettings.zoom;
+            isFlippedH = defaultSettings.isFlippedH;
+            isFlippedV = defaultSettings.isFlippedV;
+            document.body.style.backgroundColor = defaultSettings.backgroundColor;
+            
+            imageContainer.innerHTML = '';
+            imgElement = null;
+            
+            resetConfirmation.classList.remove('active');
+            menuOverlay.style.display = 'none';
+            
+            grid.style.display = 'none';
+            
+            updateGridColor();
+            updateFilters();
+            updateTransform();
+            updateSliderValues();
+            saveSettings();
+            updateButtonStates();
+        });
+
+        cancelReset.addEventListener('click', () => {
+            resetConfirmation.classList.remove('active');
+            menuOverlay.style.display = 'none';
         });
 
         function createGrid() {
@@ -1253,7 +1739,21 @@
         gridButton.addEventListener('click', (e) => {
             e.stopPropagation();
             if (!locked) {
-                grid.style.display = grid.style.display === 'none' ? 'block' : 'none';
+                const isVisible = grid.style.display === 'block';
+                
+                // Add animation
+                if (isVisible) {
+                    grid.style.opacity = '0';
+                    setTimeout(() => {
+                        grid.style.display = 'none';
+                    }, 300);
+                } else {
+                    grid.style.display = 'block';
+                    grid.style.opacity = '0';
+                    setTimeout(() => {
+                        grid.style.opacity = '1';
+                    }, 10);
+                }
             }
         });
 
@@ -1272,6 +1772,7 @@
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
             </svg>
+            <span class="tooltip">Unlock the interface</span>
         `;
             } else {
                 lockButton.classList.remove('locked');
@@ -1280,6 +1781,7 @@
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                 <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
             </svg>
+            <span class="tooltip">Lock the interface to prevent accidental changes</span>
         `;
             }
         });
@@ -1306,22 +1808,169 @@
                 lockButton.click();
             } else if (e.key === 'Escape') {
                 closeAllMenus();
+                resetConfirmation.classList.remove('active');
+                tutorialOverlay.classList.remove('active');
             }
         });
-
-        // Remove the showShortcuts button and functionality since shortcuts are always shown
-        if (document.getElementById('showShortcuts')) {
-            document.getElementById('showShortcuts').remove();
-        }
 
         undoButton.addEventListener('click', (e) => {
             e.stopPropagation();
             undo();
         });
+        
         redoButton.addEventListener('click', (e) => {
             e.stopPropagation();
             redo();
         });
+
+        // Tutorial functionality
+        function updateTutorialStep(step) {
+            document.querySelectorAll('.tutorial-step').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            document.querySelector(`.tutorial-step[data-step="${step}"]`).classList.add('active');
+            
+            document.querySelectorAll('.progress-dot').forEach(dot => {
+                dot.classList.remove('active');
+            });
+            
+            document.querySelector(`.progress-dot[data-step="${step}"]`).classList.add('active');
+            
+            prevStep.disabled = step === 1;
+            nextStep.textContent = step === totalTutorialSteps ? 'Finish' : 'Next';
+        }
+
+        nextStep.addEventListener('click', () => {
+            if (currentTutorialStep < totalTutorialSteps) {
+                currentTutorialStep++;
+                updateTutorialStep(currentTutorialStep);
+            } else {
+                tutorialOverlay.classList.remove('active');
+            }
+        });
+
+        prevStep.addEventListener('click', () => {
+            if (currentTutorialStep > 1) {
+                currentTutorialStep--;
+                updateTutorialStep(currentTutorialStep);
+            }
+        });
+
+        closeTutorial.addEventListener('click', () => {
+            tutorialOverlay.classList.remove('active');
+        });
+
+        // Presets functionality
+        function savePresetToStorage() {
+            const name = presetName.value.trim();
+            if (!name) return;
+            
+            const preset = {
+                name,
+                date: new Date().toISOString(),
+                settings: {
+                    contrast: contrastSlider.value,
+                    exposure: exposureSlider.value,
+                    opacity: opacitySlider.value,
+                    backgroundColor: bgColor.value,
+                    gridColor: gridColor.value,
+                    gridOpacity: gridOpacity.value,
+                    rotation: rotationInput.value,
+                    zoom: zoomSlider.value,
+                    isFlippedH,
+                    isFlippedV,
+                    uiScale: uiScale.value
+                }
+            };
+            
+            let presets = JSON.parse(localStorage.getItem('tracingPresets') || '[]');
+            presets.push(preset);
+            localStorage.setItem('tracingPresets', JSON.stringify(presets));
+            
+            presetName.value = '';
+            loadPresets();
+        }
+
+        function loadPresets() {
+            const presets = JSON.parse(localStorage.getItem('tracingPresets') || '[]');
+            
+            if (presets.length === 0) {
+                presetsList.innerHTML = `
+                    <div class="preset-item">
+                        <div class="preset-name">No presets saved yet</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            presetsList.innerHTML = '';
+            presets.forEach((preset, index) => {
+                const date = new Date(preset.date);
+                const formattedDate = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+                
+                const presetEl = document.createElement('div');
+                presetEl.className = 'preset-item';
+                presetEl.innerHTML = `
+                    <div class="preset-name">
+                        ${preset.name}
+                        <button class="preset-delete" data-index="${index}">&times;</button>
+                    </div>
+                    <div class="preset-info">Created: ${formattedDate}</div>
+                `;
+                
+                presetEl.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('preset-delete')) {
+                        applyPreset(preset.settings);
+                    }
+                });
+                
+                presetsList.appendChild(presetEl);
+            });
+            
+            // Add delete event listeners
+            document.querySelectorAll('.preset-delete').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const index = parseInt(e.target.dataset.index);
+                    deletePreset(index);
+                });
+            });
+        }
+
+        function applyPreset(settings) {
+            contrastSlider.value = settings.contrast;
+            exposureSlider.value = settings.exposure;
+            opacitySlider.value = settings.opacity;
+            bgColor.value = settings.backgroundColor;
+            gridColor.value = settings.gridColor;
+            gridOpacity.value = settings.gridOpacity;
+            rotationInput.value = settings.rotation;
+            zoomSlider.value = settings.zoom;
+            isFlippedH = settings.isFlippedH;
+            isFlippedV = settings.isFlippedV;
+            uiScale.value = settings.uiScale;
+            
+            document.body.style.backgroundColor = settings.backgroundColor;
+            document.documentElement.style.fontSize = settings.uiScale + 'em';
+            
+            updateGridColor();
+            updateTransform();
+            updateFilters();
+            updateSliderValues();
+            saveSettings();
+            
+            closeAllMenus();
+        }
+
+        function deletePreset(index) {
+            let presets = JSON.parse(localStorage.getItem('tracingPresets') || '[]');
+            presets.splice(index, 1);
+            localStorage.setItem('tracingPresets', JSON.stringify(presets));
+            loadPresets();
+        }
+
+        savePreset.addEventListener('click', savePresetToStorage);
     </script>
 </body>
 </html>
