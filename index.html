@@ -269,21 +269,21 @@
 .menu input[type="range"] {
     -webkit-appearance: none;
     width: 100%;
-    height: 8px;
-    border-radius: 6px;
-    background: linear-gradient(to right, var(--primary) 50%, rgba(255, 255, 255, 0.1) 50%);
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
+    height: 10px;
+    border-radius: 8px;
+    background: rgba(30, 41, 59, 0.4);
     outline: none;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: all 0.3s ease;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+    border: none;
+    overflow: hidden;
 }
 
 .menu input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    height: 22px;
-    width: 22px;
+    height: 24px;
+    width: 24px;
     border-radius: 50%;
     background: var(--primary);
     box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2), 0 2px 6px rgba(0, 0, 0, 0.3);
@@ -291,6 +291,12 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     position: relative;
     margin-top: -7px; /* center thumb vertically */
+    cursor: grab;
+}
+
+.menu input[type="range"]:active::-webkit-slider-thumb {
+    cursor: grabbing;
+    transform: scale(1.1);
 }
 
 .menu input[type="range"]::-webkit-slider-thumb:hover {
@@ -298,14 +304,26 @@
     box-shadow: 0 0 0 6px rgba(79, 70, 229, 0.3), 0 4px 10px rgba(0, 0, 0, 0.4);
 }
 
+.menu input[type="range"]::-webkit-slider-runnable-track {
+    height: 10px;
+    border-radius: 8px;
+    background: linear-gradient(to right, var(--primary) 0%, var(--primary) var(--slider-percent, 50%), rgba(30, 41, 59, 0.4) var(--slider-percent, 50%));
+}
+
 .menu input[type="range"]::-moz-range-thumb {
-    height: 22px;
-    width: 22px;
+    height: 24px;
+    width: 24px;
     border-radius: 50%;
     background: var(--primary);
     box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2), 0 2px 6px rgba(0, 0, 0, 0.3);
     border: 2px solid #fff;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: grab;
+}
+
+.menu input[type="range"]:active::-moz-range-thumb {
+    cursor: grabbing;
+    transform: scale(1.1);
 }
 
 .menu input[type="range"]::-moz-range-thumb:hover {
@@ -313,6 +331,11 @@
     box-shadow: 0 0 0 6px rgba(79, 70, 229, 0.3), 0 4px 10px rgba(0, 0, 0, 0.4);
 }
 
+.menu input[type="range"]::-moz-range-track {
+    height: 10px;
+    border-radius: 8px;
+    background: linear-gradient(to right, var(--primary) 0%, var(--primary) var(--slider-percent, 50%), rgba(30, 41, 59, 0.4) var(--slider-percent, 50%));
+}
 
         
         .menu button {
@@ -758,7 +781,7 @@
         }
 
         .preset-delete:hover {
-            background: rgba(239, 68, 68, 0.1);
+            background: rgba(239, 68, 44, 0.1);
         }
 
         .preset-info {
@@ -1538,18 +1561,43 @@
             setTimeout(() => {
                 menuOverlay.style.display = 'none';
             }, 300);
+    
+    // Reset button states when closing menus
+    Object.entries(menuButtons).forEach(([key, btn]) => {
+        if (key !== 'upload') {
+            btn.classList.remove('enabled');
         }
+    });
+    
+    // Keep grid button enabled if grid is visible
+    if (grid.style.display === 'block') {
+        gridButton.classList.add('enabled');
+    }
+}
 
         Object.entries(menuButtons).forEach(([key, button]) => {
-            if (button) {
-                button.addEventListener('click', (e) => {
-                    e.stopPropagation(); // Stop event propagation
-                    if (!locked) {
-                        showMenu(key);
+    if (button) {
+        button.addEventListener('click', (e) => {
+            e.stopPropagation(); // Stop event propagation
+            if (!locked) {
+                // First remove enabled class from all menu buttons except upload
+                Object.entries(menuButtons).forEach(([k, btn]) => {
+                    if (k !== 'upload' && k !== key) {
+                        btn.classList.remove('enabled');
                     }
                 });
+                
+                // Toggle the menu
+                showMenu(key);
+                
+                // Add enabled class to the clicked button if it's not the upload button
+                if (key !== 'upload') {
+                    button.classList.add('enabled');
+                }
             }
         });
+    }
+});
 
         // Make sure close buttons work
         Object.values(closeButtons).forEach(button => {
@@ -1592,15 +1640,23 @@
             if (imgElement) {
                 allButtons.forEach(button => {
                     if (button !== lockButton) {
-                        button.classList.add('enabled');
+                        button.disabled = false;
+                        if (!button.classList.contains('enabled') && 
+                            button !== sliderButton && 
+                            button !== transformButton && 
+                            button !== themeButton && 
+                            button !== accessibilityButton && 
+                            button !== presetsButton) {
+                            button.classList.add('enabled');
+                        }
                     }
                 });
             } else {
                 // Disable certain buttons when no image is loaded
                 [sliderButton, transformButton, undoButton, redoButton].forEach(button => {
-                    button.classList.remove('enabled');
                     if (button === undoButton || button === redoButton) {
                         button.disabled = true;
+                        button.classList.remove('enabled');
                     }
                 });
             }
@@ -1649,6 +1705,7 @@
                 updateFilters();
                 updateSliderValues();
                 saveState();
+                updateSliderBackground(slider);
             });
         });
 
@@ -1656,6 +1713,9 @@
             input.addEventListener('input', () => {
                 updateGridColor();
                 updateSliderValues();
+                if (input === gridOpacity) {
+                    updateSliderBackground(input);
+                }
             });
         });
 
@@ -1668,12 +1728,14 @@
             updateTransform();
             updateSliderValues();
             saveState();
+            updateSliderBackground(zoomSlider);
         });
 
         uiScale.addEventListener('input', () => {
             document.documentElement.style.fontSize = uiScale.value + 'em';
             updateSliderValues();
             saveSettings();
+            updateSliderBackground(uiScale);
         });
 
         flipHorizontal.addEventListener('click', () => {
@@ -1726,6 +1788,11 @@
             updateSliderValues();
             saveSettings();
             updateButtonStates();
+            
+            // Update all slider backgrounds
+            document.querySelectorAll('.menu input[type="range"]').forEach(slider => {
+                updateSliderBackground(slider);
+            });
         });
 
         cancelReset.addEventListener('click', () => {
@@ -1751,26 +1818,28 @@
             updateGridColor();
         }
 
-        gridButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (!locked) {
-                const isVisible = grid.style.display === 'block';
-                
-                // Add animation
-                if (isVisible) {
-                    grid.style.opacity = '0';
-                    setTimeout(() => {
-                        grid.style.display = 'none';
-                    }, 300);
-                } else {
-                    grid.style.display = 'block';
-                    grid.style.opacity = '0';
-                    setTimeout(() => {
-                        grid.style.opacity = '1';
-                    }, 10);
-                }
-            }
-        });
+gridButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (!locked) {
+        const isVisible = grid.style.display === 'block';
+        
+        // Toggle grid button state
+        if (isVisible) {
+            gridButton.classList.remove('enabled');
+            grid.style.opacity = '0';
+            setTimeout(() => {
+                grid.style.display = 'none';
+            }, 300);
+        } else {
+            gridButton.classList.add('enabled');
+            grid.style.display = 'block';
+            grid.style.opacity = '0';
+            setTimeout(() => {
+                grid.style.opacity = '1';
+            }, 10);
+        }
+    }
+});
 
         window.addEventListener('resize', createGrid);
 
@@ -1975,6 +2044,11 @@
             updateSliderValues();
             saveSettings();
             
+            // Update all slider backgrounds
+            document.querySelectorAll('.menu input[type="range"]').forEach(slider => {
+                updateSliderBackground(slider);
+            });
+            
             closeAllMenus();
         }
 
@@ -1987,27 +2061,54 @@
 
         savePreset.addEventListener('click', savePresetToStorage);
 
+        // Toggle button state for menu buttons
+        Object.entries(menuButtons).forEach(([key, button]) => {
+            if (button) {
+                const originalClickHandler = button.onclick;
+                button.addEventListener('click', (e) => {
+                    if (!locked) {
+                        // First remove enabled class from all menu buttons except the current one
+                        Object.entries(menuButtons).forEach(([k, btn]) => {
+                            if (btn !== button && btn !== uploadButton && !menus[k].contains(e.target)) {
+                                btn.classList.remove('enabled');
+                            }
+                        });
+                        
+                        // Add enabled class to the clicked button
+                        if (button !== uploadButton) { // Don't toggle upload button
+                            button.classList.toggle('enabled');
+                        }
+                    }
+                });
+            }
+        });
 
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            // Reset all menu button states except upload when clicking outside menus
+            if (!e.target.closest('.menu') && !e.target.closest('.button')) {
+                Object.values(menuButtons).forEach(btn => {
+                    if (btn !== uploadButton) { // Keep upload button always enabled
+                        btn.classList.remove('enabled');
+                    }
+                });
+            }
+        });
 
-    document.querySelectorAll('.menu input[type="range"]').forEach(slider => {
-    function updateBackground() {
-        const val = (slider.value - slider.min) / (slider.max - slider.min) * 100;
-        slider.style.background = `linear-gradient(to right, var(--primary) 0%, var(--primary) ${val}%, rgba(255, 255, 255, 0.1) ${val}%, rgba(255, 255, 255, 0.1) 100%)`;
-    }
-    slider.addEventListener('input', updateBackground);
-    updateBackground();
-});
-    document.querySelectorAll('.menu input[type="range"]').forEach(slider => {
-    function updateSliderBackground(slider) {
-        const min = slider.min || 0;
-        const max = slider.max || 100;
-        const val = ((slider.value - min) / (max - min)) * 100;
-        slider.style.background = `linear-gradient(to right, var(--primary) 0%, var(--primary) ${val}%, rgba(255, 255, 255, 0.1) ${val}%, rgba(255, 255, 255, 0.1) 100%)`;
-    }
+        // Function to update slider background based on value
+        function updateSliderBackground(slider) {
+            const min = parseFloat(slider.min) || 0;
+            const max = parseFloat(slider.max) || 1;
+            const val = parseFloat(slider.value);
+            const percentage = ((val - min) / (max - min)) * 100;
+            slider.style.setProperty('--slider-percent', `${percentage}%`);
+        }
 
-    slider.addEventListener('input', () => updateSliderBackground(slider));
-    updateSliderBackground(slider);
-});   
+        // Initialize slider backgrounds
+        document.querySelectorAll('.menu input[type="range"]').forEach(slider => {
+            updateSliderBackground(slider);
+            slider.addEventListener('input', () => updateSliderBackground(slider));
+        });
     </script>
 </body>
 </html>
