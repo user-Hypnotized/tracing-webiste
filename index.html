@@ -1276,21 +1276,22 @@
         };
 
         function saveState() {
-            if (imgElement) {
-                const state = {
-                    contrast: contrastSlider.value,
-                    exposure: exposureSlider.value,
-                    opacity: opacitySlider.value,
-                    rotation: rotationInput.value,
-                    zoom: zoomSlider.value,
-                    isFlippedH,
-                    isFlippedV
-                };
-                undoStack.push(state);
-                redoStack = [];
-                updateUndoRedoButtons();
-            }
-        }
+    if (imgElement) {
+        const state = {
+            contrast: contrastSlider.value,
+            exposure: exposureSlider.value,
+            opacity: opacitySlider.value,
+            rotation: rotationInput.value,
+            zoom: zoomSlider.value,
+            isFlippedH,
+            isFlippedV
+        };
+        undoStack.push(state);
+        redoStack = [];
+        updateUndoRedoButtons();
+        console.log("State saved, undo stack length:", undoStack.length);
+    }
+}
 
         function undo() {
             if (undoStack.length > 0) {
@@ -1612,28 +1613,30 @@
         menuOverlay.addEventListener('click', closeAllMenus);
 
         function loadImage(src) {
-            imageContainer.innerHTML = `<img src="${src}" alt="Uploaded Image">`;
-            imgElement = imageContainer.querySelector('img');
-            initialSettings = {
-                contrast: contrastSlider.value,
-                exposure: exposureSlider.value,
-                opacity: opacitySlider.value,
-                backgroundColor: bgColor.value,
-                gridColor: gridColor.value,
-                gridOpacity: gridOpacity.value,
-                rotation: rotationInput.value,
-                zoom: zoomSlider.value,
-                isFlippedH,
-                isFlippedV
-            };
-            updateFilters();
-            updateTransform();
-            undoStack = [];
-            redoStack = [];
-            updateUndoRedoButtons();
-            updateButtonStates();
-            closeAllMenus();
-        }
+    imageContainer.innerHTML = `<img src="${src}" alt="Uploaded Image">`;
+    imgElement = imageContainer.querySelector('img');
+    initialSettings = {
+        contrast: contrastSlider.value,
+        exposure: exposureSlider.value,
+        opacity: opacitySlider.value,
+        backgroundColor: bgColor.value,
+        gridColor: gridColor.value,
+        gridOpacity: gridOpacity.value,
+        rotation: rotationInput.value,
+        zoom: zoomSlider.value,
+        isFlippedH,
+        isFlippedV
+    };
+    updateFilters();
+    updateTransform();
+    undoStack = [];
+    redoStack = [];
+    // Save initial state
+    saveState();
+    updateUndoRedoButtons();
+    updateButtonStates();
+    closeAllMenus();
+}
 
         function updateButtonStates() {
             // Enable all buttons when an image is loaded
@@ -1701,13 +1704,16 @@
         }
 
         [contrastSlider, exposureSlider, opacitySlider].forEach(slider => {
-            slider.addEventListener('input', () => {
-                updateFilters();
-                updateSliderValues();
-                saveState();
-                updateSliderBackground(slider);
-            });
-        });
+    slider.addEventListener('input', () => {
+        if (imgElement) {
+            updateFilters();
+            updateSliderValues();
+            updateSliderBackground(slider);
+            // Only save state on mouseup/touchend to avoid filling the stack
+            slider.addEventListener('change', saveState, { once: true });
+        }
+    });
+});
 
         [gridColor, gridOpacity].forEach(input => {
             input.addEventListener('input', () => {
@@ -1720,16 +1726,23 @@
         });
 
         rotationInput.addEventListener('input', () => {
-            updateTransform();
-            saveState();
-        });
+    if (imgElement) {
+        updateTransform();
+        // Save state when user stops typing
+        clearTimeout(rotationInput.timeout);
+        rotationInput.timeout = setTimeout(saveState, 500);
+    }
+});
 
         zoomSlider.addEventListener('input', () => {
-            updateTransform();
-            updateSliderValues();
-            saveState();
-            updateSliderBackground(zoomSlider);
-        });
+    if (imgElement) {
+        updateTransform();
+        updateSliderValues();
+        updateSliderBackground(zoomSlider);
+        // Only save state on mouseup/touchend to avoid filling the stack
+        zoomSlider.addEventListener('change', saveState, { once: true });
+    }
+});
 
         uiScale.addEventListener('input', () => {
             document.documentElement.style.fontSize = uiScale.value + 'em';
@@ -1739,16 +1752,20 @@
         });
 
         flipHorizontal.addEventListener('click', () => {
-            isFlippedH = !isFlippedH;
-            updateTransform();
-            saveState();
-        });
+    if (imgElement) {
+        isFlippedH = !isFlippedH;
+        updateTransform();
+        saveState();
+    }
+});
 
         flipVertical.addEventListener('click', () => {
-            isFlippedV = !isFlippedV;
-            updateTransform();
-            saveState();
-        });
+    if (imgElement) {
+        isFlippedV = !isFlippedV;
+        updateTransform();
+        saveState();
+    }
+});
 
         resetButton.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -1898,14 +1915,18 @@ gridButton.addEventListener('click', (e) => {
         });
 
         undoButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            undo();
-        });
+    e.stopPropagation();
+    if (!undoButton.disabled) {
+        undo();
+    }
+});
         
         redoButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            redo();
-        });
+    e.stopPropagation();
+    if (!redoButton.disabled) {
+        redo();
+    }
+});
 
         // Tutorial functionality
         function updateTutorialStep(step) {
